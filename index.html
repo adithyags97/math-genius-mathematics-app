@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#10152f">
+<title>MathGenius — Mathematics Learning Lab</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="#" aria-label="MathGenius home"><span class="brand-mark">∑</span><span>Math<span class="accent">Genius</span><small>MATHEMATICS LEARNING LAB</small></span></a>
+  <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">☰</button>
+  <nav id="nav">
+    <button class="nav-btn active" data-view="home">Overview</button>
+    <button class="nav-btn" data-view="calculator">Calculator</button>
+    <button class="nav-btn" data-view="equations">Equation Solver</button>
+    <button class="nav-btn" data-view="graph">Graph Plotter</button>
+    <button class="nav-btn" data-view="formulas">Formula Library</button>
+    <button class="nav-btn" data-view="statistics">Statistics</button>
+    <button class="nav-btn" data-view="quiz">Practice Quiz</button>
+  </nav>
+</header>
+
+<main class="container">
+  <section class="hero" id="home">
+    <div class="hero-copy">
+      <span class="eyebrow">✦ YOUR SMART STUDY COMPANION</span>
+      <h1>Make maths make<br><span class="gradient-text">sense.</span></h1>
+      <p>Explore equations, visualize functions, discover formulas, and build confidence—one calculation at a time.</p>
+      <div class="hero-actions"><button class="btn primary" data-go="calculator">Open calculator <span>↗</span></button><button class="btn secondary" data-go="quiz">Try a quick quiz</button></div>
+      <div class="hero-stats"><div><strong>06</strong><span>Learning tools</span></div><div><strong>∞</strong><span>Ways to explore</span></div><div><strong>100%</strong><span>Free to use</span></div></div>
+    </div>
+    <div class="hero-art" aria-label="Decorative mathematics symbols">
+      <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="math-core">∫<small>f(x) dx</small></div>
+      <span class="float-symbol symbol-a">π</span><span class="float-symbol symbol-b">√x</span><span class="float-symbol symbol-c">∑</span><span class="float-symbol symbol-d">∞</span>
+      <div class="art-caption"><span class="live-dot"></span> LEARN BY DOING</div>
+    </div>
+  </section>
+
+  <section class="section-head">
+    <div><span class="eyebrow">THE TOOLKIT</span><h2>Everything you need to <span class="accent">solve smarter.</span></h2></div>
+    <p>Choose a tool to get started.</p>
+  </section>
+  <section class="tool-grid">
+    <button class="tool-card" data-go="calculator"><span class="tool-icon violet">⌗</span><span class="tool-tag">CALCULATE</span><h3>Scientific Calculator</h3><p>Evaluate expressions with common mathematical functions.</p><span class="card-arrow">↗</span></button>
+    <button class="tool-card" data-go="equations"><span class="tool-icon blue">x²</span><span class="tool-tag">FIND THE UNKNOWN</span><h3>Equation Solver</h3><p>Solve linear and quadratic equations step by step.</p><span class="card-arrow">↗</span></button>
+    <button class="tool-card" data-go="graph"><span class="tool-icon mint">⌁</span><span class="tool-tag">VISUALIZE</span><h3>Graph Plotter</h3><p>See how a function changes across the coordinate plane.</p><span class="card-arrow">↗</span></button>
+    <button class="tool-card" data-go="formulas"><span class="tool-icon orange">π</span><span class="tool-tag">REVISE</span><h3>Formula Library</h3><p>Keep useful algebra, geometry, and calculus formulas close.</p><span class="card-arrow">↗</span></button>
+    <button class="tool-card" data-go="statistics"><span class="tool-icon pink">σ</span><span class="tool-tag">ANALYZE DATA</span><h3>Statistics Lab</h3><p>Calculate mean, median, mode, range, and standard deviation.</p><span class="card-arrow">↗</span></button>
+    <button class="tool-card" data-go="quiz"><span class="tool-icon yellow">✦</span><span class="tool-tag">PRACTICE</span><h3>Quick Quiz</h3><p>Test your understanding with a short maths challenge.</p><span class="card-arrow">↗</span></button>
+  </section>
+
+  <section class="workspace" id="workspace">
+    <div class="workspace-heading"><div><span class="eyebrow">INTERACTIVE WORKSPACE</span><h2 id="workspaceTitle">Scientific Calculator</h2></div><button class="text-btn" id="backHome">← Back to overview</button></div>
+
+    <div class="panel tool-panel" id="panel-calculator">
+      <div class="calculator">
+        <div class="calc-screen"><span>EXPRESSION</span><input id="calcExpression" value="(12 + 8) × 3" aria-label="Expression" autocomplete="off"><div class="calc-result-label">RESULT</div><output id="calcResult">60</output></div>
+        <div class="calc-keys">
+          <button class="key function" data-insert="sin(">sin</button><button class="key function" data-insert="cos(">cos</button><button class="key function" data-insert="tan(">tan</button><button class="key function" data-insert="sqrt(">√</button><button class="key danger" data-action="clear">AC</button>
+          <button class="key function" data-insert="(">(</button><button class="key function" data-insert=")">)</button><button class="key function" data-insert="^">xʸ</button><button class="key function" data-insert="pi">π</button><button class="key danger" data-action="backspace">⌫</button>
+          <button class="key" data-insert="7">7</button><button class="key" data-insert="8">8</button><button class="key" data-insert="9">9</button><button class="key operator" data-insert="/">÷</button><button class="key function" data-insert="log(">log</button>
+          <button class="key" data-insert="4">4</button><button class="key" data-insert="5">5</button><button class="key" data-insert="6">6</button><button class="key operator" data-insert="*">×</button><button class="key function" data-insert="ln(">ln</button>
+          <button class="key" data-insert="1">1</button><button class="key" data-insert="2">2</button><button class="key" data-insert="3">3</button><button class="key operator" data-insert="-">−</button><button class="key function" data-insert="%">%</button>
+          <button class="key" data-insert="0">0</button><button class="key" data-insert=".">.</button><button class="key" data-insert="Ans">Ans</button><button class="key operator" data-insert="+">+</button><button class="key equals" data-action="calculate">=</button>
+        </div>
+        <p class="hint">Tip: use <code>^</code> for powers, e.g. <code>2^5</code>. Trigonometric functions use radians.</p>
+      </div>
+    </div>
+
+    <div class="panel tool-panel hidden" id="panel-equations">
+      <div class="two-col">
+        <div><h3>Quadratic equation solver</h3><p class="muted">Enter coefficients for <code>ax² + bx + c = 0</code>.</p>
+          <label>Coefficient a<input type="number" id="coefA" value="1" step="any"></label><label>Coefficient b<input type="number" id="coefB" value="-5" step="any"></label><label>Coefficient c<input type="number" id="coefC" value="6" step="any"></label>
+          <button class="btn primary full" id="solveEquation">Solve equation</button></div>
+        <div class="result-box"><span class="eyebrow">SOLUTION</span><div id="equationResult" class="solution">x = 2 or x = 3</div><p id="equationSteps" class="muted">Discriminant: 1. Use the quadratic formula to find both roots.</p></div>
+      </div>
+    </div>
+
+    <div class="panel tool-panel hidden" id="panel-graph">
+      <div class="graph-controls"><div class="grow"><label>Function y = f(x)<input id="graphFunction" value="x^2 - 4" spellcheck="false"></label></div><label>x range<input id="graphRange" type="number" value="10" min="2" max="50"></label><button class="btn primary graph-btn" id="drawGraph">Plot graph</button></div>
+      <p class="muted small">Supported: x, numbers, + − * /, powers (^), sin(x), cos(x), tan(x), sqrt(x), abs(x). Trig functions use radians.</p>
+      <div class="graph-wrap"><canvas id="graphCanvas" width="900" height="460" aria-label="Function graph"></canvas></div><p id="graphStatus" class="hint">Example shown: y = x² − 4</p>
+    </div>
+
+    <div class="panel tool-panel hidden" id="panel-formulas">
+      <div class="formula-toolbar"><input id="formulaSearch" placeholder="Search formulas (e.g. area, derivative)"><span class="pill">QUICK REFERENCE</span></div>
+      <div class="formula-grid" id="formulaGrid"></div>
+    </div>
+
+    <div class="panel tool-panel hidden" id="panel-statistics">
+      <div class="two-col"><div><h3>Data analyzer</h3><p class="muted">Enter numbers separated by commas or spaces.</p><label>Your data set<textarea id="statsInput" rows="4">12, 15, 18, 18, 22, 25, 30</textarea></label><button class="btn primary full" id="analyzeStats">Analyze data</button></div><div><span class="eyebrow">YOUR RESULTS</span><div class="stats-results" id="statsResults"><div><span>Mean</span><strong>20</strong></div><div><span>Median</span><strong>18</strong></div><div><span>Mode</span><strong>18</strong></div><div><span>Range</span><strong>18</strong></div><div><span>Std. deviation</span><strong>5.77</strong></div></div></div></div>
+    </div>
+
+    <div class="panel tool-panel hidden" id="panel-quiz">
+      <div class="quiz-layout"><div><span class="eyebrow">KNOWLEDGE CHECK</span><h3 id="quizCount">Question 1 of 5</h3><div class="progress"><span id="quizProgress"></span></div><h2 id="quizQuestion">What is the derivative of x²?</h2><div id="quizOptions" class="quiz-options"></div><p id="quizFeedback" aria-live="polite"></p><button class="btn primary" id="nextQuestion" disabled>Next question →</button></div><div class="quiz-side"><div class="quiz-star">✦</div><h3>Small steps.<br>Big progress.</h3><p>Practice a little every day to strengthen your mathematical thinking.</p><div class="score-box"><span>YOUR SCORE</span><strong id="quizScore">0 / 5</strong></div></div></div>
+    </div>
+  </section>
+  <footer><a class="brand footer-brand" href="#"><span class="brand-mark">∑</span><span>Math<span class="accent">Genius</span></span></a><p>Built for curious minds · Mathematics Application Project</p><span class="footer-note">LEARN • EXPLORE • SOLVE</span></footer>
+</main>
+<script src="script.js"></script>
+</body>
+</html>
