@@ -1,1 +1,0 @@
-# math-genius-mathematics-app
