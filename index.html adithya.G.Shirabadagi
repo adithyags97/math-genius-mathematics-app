@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CALCULUS &amp; LINEAR ALGEBRA | 1BMATS101 Nexus</title>
+<style>
+:root{--bg:#05060f;--c1:#19f0ff;--c2:#ff3df2;--c3:#9dff3d;--tx:#e6ecff;--mut:#8b93b8;--gl:rgba(20,26,60,.55)}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--tx);font:16px/1.6 "Segoe UI",system-ui,sans-serif;overflow-x:hidden}
+canvas#bg{position:fixed;inset:0;z-index:-2}
+#glow{position:fixed;width:420px;height:420px;border-radius:50%;pointer-events:none;z-index:-1;background:radial-gradient(circle,rgba(25,240,255,.16),transparent 65%);transform:translate(-50%,-50%)}
+nav{position:sticky;top:0;z-index:9;display:flex;gap:18px;justify-content:center;flex-wrap:wrap;padding:12px;background:rgba(5,6,15,.7);backdrop-filter:blur(12px);border-bottom:1px solid #1d2450}
+nav a{color:var(--mut);text-decoration:none;font-size:14px;transition:.3s}nav a:hover{color:var(--c1);text-shadow:0 0 12px var(--c1)}
+header{min-height:92vh;display:grid;place-items:center;text-align:center;padding:40px 20px}
+.orb{width:150px;height:150px;margin:0 auto 26px;border-radius:50%;position:relative;background:conic-gradient(from 0deg,var(--c1),var(--c2),var(--c3),var(--c1));animation:spin 6s linear infinite;filter:drop-shadow(0 0 30px var(--c2))}
+.orb:after{content:"∇f";position:absolute;inset:8px;border-radius:50%;background:var(--bg);display:grid;place-items:center;font:700 44px Georgia,serif;color:var(--c1);animation:spin 6s linear infinite reverse}
+@keyframes spin{to{transform:rotate(360deg)}}
+h1{font:800 clamp(34px,7vw,84px)/1.05 Georgia,"Times New Roman",serif;letter-spacing:-1px;background:linear-gradient(90deg,var(--c1),var(--c2),var(--c3),var(--c1));background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:flow 6s linear infinite}
+@keyframes flow{to{background-position:300% 0}}
+#type{font:18px monospace;color:var(--c3);min-height:30px;margin:18px 0}
+.chips{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.chip,button{background:transparent;color:var(--c1);border:1px solid var(--c1);padding:8px 16px;border-radius:30px;cursor:pointer;font:inherit;font-size:14px;transition:.25s}
+.chip:hover,button:hover{background:var(--c1);color:#001;box-shadow:0 0 22px var(--c1)}
+section{max-width:1150px;margin:0 auto;padding:70px 20px}
+h2{font:700 clamp(26px,4vw,42px) Georgia,serif;margin-bottom:8px}
+.sub{color:var(--mut);margin-bottom:30px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:22px}
+.card{background:var(--gl);border:1px solid #232b66;border-radius:18px;padding:22px;backdrop-filter:blur(8px);transition:transform .2s,border-color .3s,box-shadow .3s;cursor:pointer;transform-style:preserve-3d}
+.card:hover{border-color:var(--c2);box-shadow:0 0 34px rgba(255,61,242,.25)}
+.card h3{font:700 20px Georgia,serif;color:var(--c1)}
+.card .hr{color:var(--c2);font-size:13px;margin-bottom:8px}
+.more{max-height:0;overflow:hidden;transition:max-height .6s ease;font-size:14.5px;color:#cdd5ff}
+.card.open .more{max-height:900px;margin-top:12px}
+.more li{margin:4px 0 4px 18px}
+.f{display:block;margin:8px 0;padding:8px 10px;background:#0a0f2c;border-left:3px solid var(--c3);border-radius:6px;font:14px "Cambria Math",Georgia,serif;color:var(--c3)}
+.tool{background:var(--gl);border:1px solid #232b66;border-radius:18px;padding:22px}
+.m{display:grid;grid-template-columns:repeat(4,64px);gap:8px;margin:12px 0}
+.m.two{grid-template-columns:repeat(2,64px)}
+input{background:#0a0f2c;border:1px solid #2b3480;color:var(--tx);border-radius:8px;padding:8px;width:100%;font:inherit}
+input:focus{outline:2px solid var(--c1)}
+pre{white-space:pre-wrap;font:14px/1.6 monospace;color:var(--c3);margin-top:12px}
+#chat{height:340px;overflow:auto;background:#070b22;border:1px solid #232b66;border-radius:14px;padding:14px;margin-bottom:12px}
+.b{max-width:86%;padding:10px 14px;border-radius:14px;margin:8px 0;animation:pop .3s}
+.u{margin-left:auto;background:linear-gradient(90deg,#1c6cff,#a12bff)}
+.a{background:#121a45;border:1px solid #2b3480}
+@keyframes pop{from{opacity:0;transform:scale(.9)}}
+.row{display:flex;gap:10px}
+footer{text-align:center;color:var(--mut);padding:40px 20px;font-size:14px}
+.opt{display:block;width:100%;text-align:left;margin:8px 0;border-radius:12px}
+.opt.ok{background:#12c26a;color:#001;border-color:#12c26a}.opt.bad{background:#ff4d6d;color:#001;border-color:#ff4d6d}
+.bar{height:6px;background:#10173d;border-radius:6px;overflow:hidden;margin-bottom:14px}.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--c1),var(--c2));transition:width .5s}
+.sp{border-radius:4px;transition:background .2s}.sp.on{background:rgba(25,240,255,.28);box-shadow:0 0 0 3px rgba(25,240,255,.28)}
+#sol p{margin:9px 0;font-size:16.5px;line-height:1.8}
+.say{margin-top:8px;font-size:13px;padding:4px 12px}
+#lo{position:fixed;right:18px;bottom:18px;z-index:30;padding:14px 22px;border-radius:40px;border:0;background:linear-gradient(90deg,var(--c1),var(--c2));color:#001;font-weight:700;font-size:16px;animation:pl 2s infinite}
+@keyframes pl{0%{box-shadow:0 0 0 0 rgba(25,240,255,.6)}100%{box-shadow:0 0 0 22px rgba(25,240,255,0)}}
+#ap{position:fixed;right:18px;bottom:82px;z-index:31;width:min(410px,94vw);height:min(580px,78vh);display:none;flex-direction:column;background:rgba(7,11,34,.96);border:1px solid var(--c2);border-radius:20px;box-shadow:0 0 50px rgba(255,61,242,.3);backdrop-filter:blur(14px)}
+#ap.show{display:flex;animation:pop .35s}
+.ah{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid #232b66}
+.ah span{color:var(--c3);font-size:12px;flex:1}.ah .x{padding:2px 10px}
+.o2{width:22px;height:22px;border-radius:50%;background:conic-gradient(var(--c1),var(--c2),var(--c3),var(--c1));animation:spin 3s linear infinite}
+#akey{margin:8px 12px 0;width:auto;font-size:13px}
+#ac{flex:1;overflow:auto;padding:8px 12px}#ac .b{max-width:96%}#ac p{margin:6px 0;font-size:15px;line-height:1.7}
+.sq{padding:8px 12px;border-radius:12px}
+#mp{position:fixed;right:150px;bottom:26px;z-index:30;max-width:min(60vw,420px);padding:8px 14px;border-radius:20px;background:rgba(7,11,34,.92);border:1px solid #2b3480;color:var(--c3);font-size:12.5px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body>
+<canvas id="bg"></canvas><div id="glow"></div>
+<nav><a href="#top">Home</a><a href="#modules">Modules</a><a href="#labs">Lab Activities</a><a href="#tools">Live Tools</a><a href="#quiz">Quiz</a><a href="#ask">Ask the Module AI</a><a href="#info">Course Info</a></nav>
+<header id="top"><div><div class="orb"></div>
+<h1>CALCULUS &amp;<br>LINEAR ALGEBRA</h1>
+<div style="color:var(--c2);margin-top:8px">1BMATS101 · Semester 1 · CSE / AIML · 4 Credits</div>
+<div id="type"></div>
+<div class="chips"><button onclick="location='#modules'">Explore modules</button><button onclick="launch()">Call Spoorthi: say “Hey Spoorthi”</button><button onclick="location='#ask'">Ask a question</button><button onclick="location='#tools'">Try live solvers</button></div></div></header>
+
+<section id="modules"><h2>Five modules. One universe.</h2><p class="sub">Tap a card to expand topics and key formulae.</p><div class="grid" id="mg"></div></section>
+
+<section id="labs"><h2>Lab activities (CCA Activity-2)</h2><p class="sub">Run these with Python, MATLAB, Scilab, Mathematica or Maxima.</p><div class="grid" id="lg"></div></section>
+
+<section id="tools"><h2>Live solvers</h2><p class="sub">Runs in your browser, no internet needed.</p>
+<div class="grid">
+<div class="tool"><h3 style="color:var(--c1)">Gauss–Jordan solver (3 equations, 3 unknowns)</h3><p style="color:var(--mut);font-size:14px">Enter the augmented matrix [A | B].</p><div class="m" id="gm"></div><button onclick="solve()">Solve &amp; find rank</button><pre id="gout"></pre></div>
+<div class="tool"><h3 style="color:var(--c1)">Eigenvalues &amp; eigenvectors (2×2)</h3><p style="color:var(--mut);font-size:14px">Enter matrix [[a, b],[c, d]].</p><div class="m two" id="em"></div><button onclick="eig()">Find λ and v</button><pre id="eout"></pre></div>
+</div></section>
+
+<section id="ask"><h2>Ask the Module AI</h2><p class="sub">Answers any question from the 5 modules, offline. Try: "What is the Jacobian?", "state rank nullity theorem", "curl of a vector field".</p>
+<div id="chat"><div class="b a">Hello! Ask me anything from Modules 1–5: partial derivatives, vector calculus, Gauss methods, eigenvalues, vector spaces or linear transformations.</div></div>
+<div class="row"><input id="q" placeholder="Type your question…" aria-label="Question"><button onclick="ask()">Ask</button></div>
+<div class="chips" style="margin-top:14px" id="sug"></div></section>
+
+<section id="quiz"><h2>20-question quiz</h2><p class="sub">Four questions from each module. Each answer comes with a full explanation you can listen to.</p>
+<div class="tool" id="qz"></div></section>
+
+<section id="info"><h2>Course information</h2><div class="grid">
+<div class="card open"><h3>Course outcomes</h3><div class="more"><ul><li>CO1: Multivariable and vector calculus: derivatives, optimization, vector fields.</li><li>CO2: Solve linear systems; eigenvalues and eigenvectors by direct and iterative methods.</li><li>CO3: Vector spaces and linear transformations in CS engineering.</li><li>CO4: Applications using modern ICT tools.</li></ul></div></div>
+<div class="card open"><h3>Assessment</h3><div class="more"><ul><li>CIE 50 + SEE 50 = 100 marks, 3 hr exam.</li><li>CIE = average of 2 IA tests (25) + CCA (25).</li><li>CCA Activity-1: two objective tests, 7.5 each (15). Activity-2: lab or group seminar (max 4 students), 10 marks.</li><li>Need 20/50 in CIE to be eligible, 18/50 in SEE, and 40/100 overall.</li></ul></div></div>
+<div class="card open"><h3>Textbooks</h3><div class="more"><ul><li>B. S. Grewal, Higher Engineering Mathematics, 44th Ed.</li><li>E. Kreyszig, Advanced Engineering Mathematics, 10th Ed.</li><li>Lipschutz &amp; Lipson, Linear Algebra (Schaum's), 4th Ed.</li><li>Refs: Strang, Lay, Poole, Stewart, Ramana, Bali &amp; Goyal, Williams.</li></ul></div></div>
+<div class="card open"><h3>E-resources</h3><div class="more"><ul><li>nptel.ac.in/courses/111106135 and 111105160</li><li>MIT OCW 18.06 Linear Algebra, 18.02SC Multivariable Calculus</li><li>VTU e-Shikshana, VTU EDUSAT, academicearth.org</li></ul></div></div>
+</div></section>
+<footer>Built for 1BMATS101 · BGSCET · 2025–2026</footer>
+
+<button id="lo" onclick="launch()" aria-label="Call Spoorthi">Spoorthi</button>
+<div id="mp" aria-live="polite">Tap anywhere, then say “Hello Spoorthi”</div>
+<div id="ap" role="dialog" aria-label="Spoorthi assistant"><div class="ah"><i class="o2"></i><b>Spoorthi</b><span id="as">say “Hey Spoorthi” to call me</span><button class="x" onclick="aClose()" aria-label="Close">✕</button></div>
+<select id="vs" title="Choose a female voice" aria-label="Voice" style="margin:6px 12px 0;background:#0a0f2c;color:var(--tx);border:1px solid #2b3480;border-radius:8px;padding:6px;font-size:12px"></select>
+<div id="ac"><div class="b a">Hi, I am Spoorthi, your maths assistant for 1BMATS101. Type or say a problem, for example: eigenvalues of [[4,1],[2,3]].</div></div>
+<div class="row" style="padding:10px"><input id="at" placeholder="Type or say your problem" aria-label="Problem"><button class="sq" onclick="micBtn()" title="Speak">🎤</button><button class="sq" onclick="sendA()" title="Send">➤</button></div></div>
+<script>
+const $=s=>document.querySelector(s);
+const MODS=[
+["Module 1: Calculus","8 hrs theory + 4 hrs tutorial · Textbook-1 Ch.5 (5.1–5.11)",["Partial differentiation","Total derivative, differentiation of composite functions","Jacobian","Taylor's and Maclaurin's series for two variables (statement)","Maxima and minima of two variables"],["dz = (∂f/∂x)dx + (∂f/∂y)dy","J = ∂(u,v)/∂(x,y) = |u_x u_y; v_x v_y|","Max/min: rt − s² > 0 → extremum (r<0 max, r>0 min); rt − s² < 0 → saddle"]],
+["Module 2: Vector Calculus","8 hrs + 4 hrs · Textbook-1 Ch.5 (5.4–5.21)",["Scalar and vector fields","Gradient, directional derivative","Divergence and curl, physical meaning","Solenoidal and irrotational fields, scalar potential","Polar coordinates and polar curves","Curvilinear coordinates: scale factors, base vectors, cylindrical and spherical systems, orthogonality"],["∇φ = φ_x i + φ_y j + φ_z k","D_u φ = ∇φ · û","div F = ∇·F, curl F = ∇×F","Solenoidal: ∇·F = 0 · Irrotational: ∇×F = 0, F = ∇φ"]],
+["Module 3: Linear Equations, Eigenvalues","8 hrs + 4 hrs · Textbook-1 Ch.2 (2.7–2.16), Ch.28 (28.6–28.7); Textbook-2 Ch.7",["Elementary row transformations, echelon form, rank","Consistency and solution of linear systems","Gauss elimination, Gauss–Jordan","Application: traffic flow","Eigenvalues, eigenvectors, diagonalization, modal matrix"],["Consistent iff rank(A) = rank([A|B])","|A − λI| = 0 (characteristic equation)","D = P⁻¹AP, P = modal matrix"]],
+["Module 4: Vector Space","8 hrs + 4 hrs · Textbook-3 Ch.4 (4.1–4.9, 4.11)",["Vector spaces and subspaces: definition, examples","Linear combination, span","Linear independence and dependence","Basis and dimension","Row space, column space","Coordinate vector, inner product, orthogonality"],["Span{v₁..vₙ} = {Σ cᵢvᵢ}","⟨u,v⟩ = 0 ⇔ u ⊥ v","dim V = number of vectors in a basis"]],
+["Module 5: Linear Transformation","8 hrs + 4 hrs · Textbook-3 Ch.5 (5.3–5.7), Ch.6 (6.1–6.2)",["Definition and examples, algebra of linear transformations","Matrix of a linear transformation","Singular, non-singular, invertible transformations","Rank and nullity, Rank–Nullity theorem"],["T(u+v) = T(u)+T(v), T(cu) = cT(u)","rank(T) + nullity(T) = dim V","Ker T = {v : T(v)=0}, Im T = {T(v)}"]]];
+$("#mg").innerHTML=MODS.map(m=>`<div class="card"><h3>${m[0]}</h3><div class="hr">${m[1]}</div><div class="more"><ul>${m[2].map(t=>`<li>${t}</li>`).join("")}</ul>${m[3].map(f=>`<span class="f">${f}</span>`).join("")}</div></div>`).join("");
+const LABS=["Partial derivatives and Jacobian","Taylor's and Maclaurin's series","Gradient, divergence and curl","Rank, reduced echelon form, Gauss elimination","Gauss–Seidel method","Eigenvalues and eigenvectors","Linear independence and dependence","Basis and dimension","Linear transformation: range space and null space","Verification of the Rank–Nullity theorem"];
+$("#lg").innerHTML=LABS.map((l,i)=>`<div class="card"><div class="hr">Lab ${i+1}</div><h3 style="font-size:17px">${l}</h3></div>`).join("");
+document.querySelectorAll(".card").forEach(c=>{c.onclick=()=>c.classList.toggle("open");
+c.onmousemove=e=>{const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;c.style.transform=`perspective(700px) rotateY(${x*8}deg) rotateX(${-y*8}deg)`};
+c.onmouseleave=()=>c.style.transform=""});
+
+/* typewriter */
+const T=["Differentiate. Integrate. Transform.","Gradient · Divergence · Curl","Rank · Eigenvalues · Basis · Kernel","rank(T) + nullity(T) = dim V"];let ti=0,ci=0,del=0;
+(function tw(){const s=T[ti];if(!del){ci++;if(ci>s.length){del=1;return setTimeout(tw,1400)}}else{ci--;if(ci<0){del=0;ci=0;ti=(ti+1)%T.length}}
+$("#type").textContent=s.slice(0,Math.max(ci,0))+"▌";setTimeout(tw,del?30:70)})();
+
+/* background */
+const cv=$("#bg"),cx=cv.getContext("2d");let W,H;const S="∇∂∫∑λπ∞θφ⊥det".split("").concat(["rank","Jₓ"]);let P=[];
+function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight;P=Array.from({length:Math.min(70,W/18|0)},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,s:S[Math.random()*S.length|0],z:12+Math.random()*22}))}
+addEventListener("resize",rs);rs();let mx=-999,my=-999;
+addEventListener("mousemove",e=>{mx=e.clientX;my=e.clientY;$("#glow").style.left=mx+"px";$("#glow").style.top=my+"px"});
+(function fr(){cx.clearRect(0,0,W,H);
+P.forEach((p,i)=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;
+const d=Math.hypot(p.x-mx,p.y-my);if(d<130){p.x+=(p.x-mx)/d*2;p.y+=(p.y-my)/d*2}
+cx.font=p.z+"px Georgia";cx.fillStyle=i%2?"rgba(25,240,255,.45)":"rgba(255,61,242,.4)";cx.fillText(p.s,p.x,p.y);
+for(let j=i+1;j<P.length;j++){const q=P[j],dd=Math.hypot(p.x-q.x,p.y-q.y);if(dd<120){cx.strokeStyle=`rgba(120,140,255,${.2*(1-dd/120)})`;cx.beginPath();cx.moveTo(p.x,p.y);cx.lineTo(q.x,q.y);cx.stroke()}}});
+requestAnimationFrame(fr)})();
+
+/* tools */
+const G=[[1,1,1,6],[0,2,5,-4],[2,5,-1,27]];
+$("#gm").innerHTML=G.flat().map((v,i)=>`<input type="number" step="any" value="${v}" id="g${i}">`).join("");
+$("#em").innerHTML=[2,1,1,2].map((v,i)=>`<input type="number" step="any" value="${v}" id="e${i}">`).join("");
+const f=x=>{x=Math.round(x*1e6)/1e6;return Object.is(x,-0)?0:x};
+function rref(M,nc){let r=0;const piv=[];for(let c=0;c<nc&&r<M.length;c++){let p=r;for(let i=r;i<M.length;i++)if(Math.abs(M[i][c])>Math.abs(M[p][c]))p=i;if(Math.abs(M[p][c])<1e-9)continue;[M[r],M[p]]=[M[p],M[r]];const d=M[r][c];M[r]=M[r].map(v=>v/d);for(let i=0;i<M.length;i++)if(i!=r){const k=M[i][c];M[i]=M[i].map((v,j)=>v-k*M[r][j])}piv.push(c);r++}return piv.length}
+function solve(){const M=[0,1,2].map(i=>[0,1,2,3].map(j=>+$("#g"+(i*4+j)).value));const A=M.map(r=>r.slice(0,3));
+const rA=rref(A.map(r=>r.slice()),3);const R=M.map(r=>r.slice());const rK=rref(R,4);
+let o=`rank(A) = ${rA}, rank([A|B]) = ${rK}, unknowns n = 3\nReduced echelon form:\n`+R.map(r=>"  ["+r.map(v=>f(v)).join(", ")+"]").join("\n")+"\n";
+if(rA<rK)o+="Inconsistent: no solution.";else if(rA==3)o+=`Unique solution: x = ${f(R[0][3])}, y = ${f(R[1][3])}, z = ${f(R[2][3])}`;else o+=`Consistent with infinitely many solutions (${3-rA} free parameter${3-rA>1?"s":""}).`;
+$("#gout").textContent=o}
+function eig(){const[a,b,c,d]=[0,1,2,3].map(i=>+$("#e"+i).value);const t=a+d,D=a*d-b*c,disc=t*t-4*D;
+let o=`Trace = ${f(t)}, det = ${f(D)}\nCharacteristic eq: λ² − ${f(t)}λ + ${f(D)} = 0\n`;
+if(disc<0){o+=`Complex eigenvalues: ${f(t/2)} ± ${f(Math.sqrt(-disc)/2)}i`}else{const l=[(t+Math.sqrt(disc))/2,(t-Math.sqrt(disc))/2];
+o+=`Eigenvalues: λ₁ = ${f(l[0])}, λ₂ = ${f(l[1])}\n`;
+l.forEach((x,i)=>{let v=Math.abs(b)>1e-9?[b,x-a]:Math.abs(c)>1e-9?[x-d,c]:(Math.abs(x-a)<1e-9?[1,0]:[0,1]);o+=`For λ${i+1}: v = (${f(v[0])}, ${f(v[1])}) (any scalar multiple)\n`})}
+$("#eout").textContent=o}
+
+/* knowledge base */
+const KB=[
+[["partial derivative","partial differentiation","partial"],"<b>Partial derivative:</b> for z = f(x,y), ∂f/∂x is the derivative with respect to x treating y as constant, and ∂f/∂y the reverse. Second order: f_xx, f_yy, f_xy = f_yx (equal if continuous). Euler's theorem for a homogeneous function of degree n: x f_x + y f_y = n f."],
+[["total derivative","total differential"],"<b>Total derivative:</b> if z = f(x,y) and x = x(t), y = y(t), then dz/dt = (∂f/∂x)(dx/dt) + (∂f/∂y)(dy/dt). The total differential is dz = f_x dx + f_y dy."],
+[["composite","chain rule"],"<b>Composite functions (chain rule):</b> if z = f(u,v) with u = u(x,y), v = v(x,y), then ∂z/∂x = (∂z/∂u)(∂u/∂x) + (∂z/∂v)(∂v/∂x), and ∂z/∂y similarly with y."],
+[["jacobian"],"<b>Jacobian:</b> for u = u(x,y), v = v(x,y), J = ∂(u,v)/∂(x,y) = u_x v_y − u_y v_x (determinant of the matrix of first partials). Property: ∂(u,v)/∂(x,y) · ∂(x,y)/∂(u,v) = 1. For three variables it is a 3×3 determinant. If J = 0 the functions are functionally dependent. Examples: polar x = r cosθ, y = r sinθ gives J = r; spherical gives J = r² sinθ; cylindrical gives J = ρ."],
+[["taylor","maclaurin","series expansion","expansion"],"<b>Taylor series (two variables) about (a,b):</b> f(x,y) = f(a,b) + [(x−a)f_x + (y−b)f_y] + (1/2!)[(x−a)²f_xx + 2(x−a)(y−b)f_xy + (y−b)²f_yy] + … , all derivatives evaluated at (a,b). <b>Maclaurin</b> is the case (a,b) = (0,0): f(x,y) = f(0,0) + [x f_x + y f_y] + (1/2!)[x² f_xx + 2xy f_xy + y² f_yy] + …"],
+[["maxima","minima","maximum","minimum","extremum","saddle","stationary"],"<b>Maxima and minima of f(x,y):</b><br>1. Solve f_x = 0, f_y = 0 for stationary points.<br>2. At each point compute r = f_xx, s = f_xy, t = f_yy.<br>3. If rt − s² > 0 and r < 0: maximum. If rt − s² > 0 and r > 0: minimum. If rt − s² < 0: saddle point (no extremum). If rt − s² = 0: test fails, needs further study."],
+[["directional"],"<b>Directional derivative</b> of φ at a point along a vector a: D_a φ = ∇φ · â, where â = a/|a|. It is maximum along ∇φ and the maximum value is |∇φ|."],
+[["gradient","grad"],"<b>Gradient</b> of a scalar field φ: ∇φ = (∂φ/∂x) i + (∂φ/∂y) j + (∂φ/∂z) k. It points in the direction of greatest increase of φ and is normal to the level surface φ = c. Unit normal = ∇φ/|∇φ|."],
+[["divergence","div "],"<b>Divergence</b> of F = F₁i + F₂j + F₃k: ∇·F = ∂F₁/∂x + ∂F₂/∂y + ∂F₃/∂z, a scalar. Physically it measures the net outflow per unit volume (source strength) of the field. If ∇·F = 0 the field is <b>solenoidal</b>."],
+[["curl","rotation"],"<b>Curl</b> of F: ∇×F = determinant of [i j k; ∂/∂x ∂/∂y ∂/∂z; F₁ F₂ F₃] = (∂F₃/∂y − ∂F₂/∂z) i − (∂F₃/∂x − ∂F₁/∂z) j + (∂F₂/∂x − ∂F₁/∂y) k. Physically, curl F = 2ω, twice the angular velocity of rotation. If ∇×F = 0 the field is <b>irrotational</b>."],
+[["solenoidal","irrotational","scalar potential","conservative"],"<b>Solenoidal:</b> ∇·F = 0. <b>Irrotational:</b> ∇×F = 0, and then F = ∇φ for a scalar potential φ (find it by integrating F₁ = ∂φ/∂x, F₂ = ∂φ/∂y, F₃ = ∂φ/∂z). Identities: curl(grad φ) = 0 and div(curl F) = 0."],
+[["polar coordinate","polar curve","polar"],"<b>Polar coordinates:</b> x = r cosθ, y = r sinθ, r² = x² + y², tanθ = y/x. A polar curve is r = f(θ), e.g. the circle r = a, cardioid r = a(1 + cosθ), lemniscate r² = a² cos2θ. Area element: dA = r dr dθ. Angle between radius vector and tangent: tanφ = r dθ/dr."],
+[["cylindrical"],"<b>Cylindrical polar coordinates (ρ, φ, z):</b> x = ρ cosφ, y = ρ sinφ, z = z. Scale factors: h_ρ = 1, h_φ = ρ, h_z = 1. Volume element dV = ρ dρ dφ dz. The system is orthogonal."],
+[["spherical"],"<b>Spherical polar coordinates (r, θ, φ):</b> x = r sinθ cosφ, y = r sinθ sinφ, z = r cosθ. Scale factors: h_r = 1, h_θ = r, h_φ = r sinθ. Volume element dV = r² sinθ dr dθ dφ. The system is orthogonal."],
+[["curvilinear","scale factor","base vector","orthogonal","orthogonality"],"<b>Curvilinear coordinates (u₁,u₂,u₃):</b> scale factors h_i = |∂r/∂u_i|, base vectors e_i = (1/h_i)(∂r/∂u_i). The system is <b>orthogonal</b> if e_i · e_j = 0 for i ≠ j. Cylindrical: (1, ρ, 1). Spherical: (1, r, r sinθ). Gradient: ∇φ = Σ (1/h_i)(∂φ/∂u_i) e_i."],
+[["echelon","elementary row","row transformation","row operation"],"<b>Elementary row transformations:</b> swap two rows (R_i ↔ R_j), multiply a row by a non-zero constant (R_i → kR_i), add a multiple of one row to another (R_i → R_i + kR_j). <b>Echelon form:</b> zero rows at the bottom, and each leading non-zero entry lies to the right of the one above it. Reduced echelon form also has leading entries equal to 1 with zeros above and below."],
+[["rank"],"<b>Rank of a matrix</b> = number of non-zero rows in its echelon form (equivalently, the order of the largest non-vanishing minor). For an m×n matrix, rank ≤ min(m,n). Row rank = column rank."],
+[["consistent","consistency","consistency of"],"<b>Consistency of AX = B</b> (n unknowns): consistent iff rank(A) = rank([A|B]). If rank(A) = rank([A|B]) = n: unique solution. If rank(A) = rank([A|B]) < n: infinitely many solutions (n − r free variables). If rank(A) ≠ rank([A|B]): no solution (inconsistent). For homogeneous AX = 0, the trivial solution always exists, and non-trivial solutions exist iff rank < n (i.e. |A| = 0 for square A)."],
+[["gauss jordan","gauss-jordan"],"<b>Gauss–Jordan method:</b> reduce the augmented matrix [A|B] fully to reduced row echelon form [I|X] using row operations; the solution can be read off directly. For a square invertible A this also gives A⁻¹ by reducing [A|I] to [I|A⁻¹]."],
+[["seidel","iterative","jacobi"],"<b>Gauss–Seidel (iterative):</b> make the system diagonally dominant, then solve for each variable in turn, always using the latest updated values: x^(k+1) = (b₁ − a₁₂y^(k) − a₁₃z^(k))/a₁₁; y^(k+1) = (b₂ − a₂₁x^(k+1) − a₂₃z^(k))/a₂₂; z^(k+1) = (b₃ − a₃₁x^(k+1) − a₃₂y^(k+1))/a₃₃. Start with initial guess (0,0,0) and repeat until values converge. It converges faster than Jacobi."],
+[["gauss elimination","elimination","gauss"],"<b>Gauss elimination:</b> reduce the augmented matrix [A|B] to upper-triangular (echelon) form using row operations, then find the unknowns by back-substitution starting from the last equation. Rank comparison tells you whether the solution exists and is unique."],
+[["traffic"],"<b>Traffic flow application:</b> at each intersection, flow in = flow out, giving a linear system in the unknown flows. Solve using Gauss elimination/Gauss–Jordan; if the rank is less than the number of unknowns, some flows are free parameters (they must stay non-negative for a realistic solution)."],
+[["diagonal","modal"],"<b>Diagonalization:</b> a square matrix A of order n with n linearly independent eigenvectors can be diagonalized. Form the <b>modal matrix</b> P whose columns are the eigenvectors; then P⁻¹AP = D = diag(λ₁,…,λₙ). Useful for Aⁿ = P Dⁿ P⁻¹. A matrix with distinct eigenvalues is always diagonalizable; a symmetric matrix is orthogonally diagonalizable."],
+[["eigen","characteristic"],"<b>Eigenvalues and eigenvectors:</b> AX = λX with X ≠ 0. Eigenvalues are roots of the characteristic equation |A − λI| = 0 (for 2×2: λ² − (trace)λ + det = 0). For each λ solve (A − λI)X = 0 to get the eigenvector. Properties: sum of eigenvalues = trace, product = |A|; eigenvalues of triangular matrices are the diagonal entries; Aᵏ has eigenvalues λᵏ; eigenvectors for distinct eigenvalues are linearly independent. Cayley–Hamilton: A satisfies its own characteristic equation."],
+[["subspace"],"<b>Subspace:</b> a non-empty subset W of a vector space V is a subspace iff (i) u + v ∈ W and (ii) cu ∈ W for all u,v ∈ W and scalars c (equivalently, au + bv ∈ W). It must contain the zero vector. Examples: the solution set of AX = 0, a line or plane through the origin in R³."],
+[["vector space"],"<b>Vector space</b> V over a field F (e.g. R): a set with addition and scalar multiplication satisfying closure, commutativity and associativity of addition, a zero vector, additive inverses, and scalar-multiplication axioms (c(u+v) = cu+cv, (a+b)u = au+bu, (ab)u = a(bu), 1u = u). Examples: Rⁿ, the set of m×n matrices, polynomials of degree ≤ n, continuous functions."],
+[["span","linear combination"],"<b>Linear combination:</b> v = c₁v₁ + … + cₙvₙ. <b>Linear span</b> L(S) is the set of all linear combinations of vectors of S; it is the smallest subspace containing S. To test whether v is in the span, solve for the scalars cᵢ (a linear system)."],
+[["independen","dependen"],"<b>Linear independence:</b> vectors v₁…vₙ are independent if c₁v₁ + … + cₙvₙ = 0 forces all cᵢ = 0; otherwise they are dependent. Test: put the vectors as rows/columns of a matrix and find its rank. Independent iff rank = number of vectors. For n vectors in Rⁿ, independent iff determinant ≠ 0."],
+[["basis","dimension"],"<b>Basis:</b> a set of vectors that is linearly independent and spans V. <b>Dimension</b> = number of vectors in any basis (all bases have the same size). dim Rⁿ = n, dim of m×n matrices = mn, dim Pₙ = n+1. Any n independent vectors in an n-dimensional space form a basis."],
+[["row space","column space"],"<b>Row space</b> = span of the rows of A; <b>column space</b> = span of the columns of A. Both have dimension = rank(A). The non-zero rows of the echelon form give a basis of the row space; the pivot columns of the original matrix give a basis of the column space."],
+[["coordinate"],"<b>Coordinate vector:</b> if B = {v₁,…,vₙ} is a basis and v = c₁v₁ + … + cₙvₙ, then [v]_B = (c₁,…,cₙ). The scalars are unique for a given basis. Find them by solving the linear system."],
+[["inner product","dot product","orthogonal vectors","norm"],"<b>Inner product</b> axioms: ⟨u,v⟩ = ⟨v,u⟩, linearity, and ⟨v,v⟩ > 0 for v ≠ 0. In Rⁿ: ⟨u,v⟩ = u₁v₁ + … + uₙvₙ. Norm ‖v‖ = √⟨v,v⟩. Vectors are <b>orthogonal</b> if ⟨u,v⟩ = 0. Cauchy–Schwarz: |⟨u,v⟩| ≤ ‖u‖‖v‖. Angle: cosθ = ⟨u,v⟩/(‖u‖‖v‖). Gram–Schmidt creates an orthonormal basis."],
+[["rank nullity","rank-nullity","nullity"],"<b>Rank–Nullity theorem:</b> for a linear transformation T: V → W with V finite-dimensional, rank(T) + nullity(T) = dim V, where rank(T) = dim of the range (image) and nullity(T) = dim of the kernel (null space). For an m×n matrix A: rank(A) + nullity(A) = n."],
+[["singular","non-singular","nonsingular","invertible"],"<b>Singular / non-singular:</b> T is non-singular if ker T = {0} (T is one-one); otherwise singular. For T: V → V with V finite-dimensional, T is invertible ⇔ non-singular ⇔ onto ⇔ det of its matrix ≠ 0. Then T⁻¹ is also linear."],
+[["matrix of a linear","matrix of linear","matrix representation"],"<b>Matrix of a linear transformation:</b> for bases {e₁..eₙ} of V and {f₁..fₘ} of W, write T(eⱼ) as a combination of the fᵢ; the coefficients form the j-th column of the m×n matrix [T]. For standard bases of Rⁿ, T(x) = Ax. Composition of transformations corresponds to matrix multiplication."],
+[["linear transformation","linear map","kernel","range space","null space","algebra of linear"],"<b>Linear transformation</b> T: V → W satisfies T(u+v) = T(u)+T(v) and T(cu) = cT(u), so T(0) = 0. Kernel (null space) ker T = {v : T(v) = 0}, a subspace of V; range Im T = {T(v)} a subspace of W. Algebra: (T₁+T₂)(v) = T₁v + T₂v, (cT)(v) = c·T(v), (T₂∘T₁)(v) = T₂(T₁(v)); the set of all linear maps V → W is itself a vector space. Examples: reflection, rotation, projection, differentiation."],
+[["course outcome","co1","co2","co3","co4"],"<b>Course outcomes:</b> CO1 multivariable and vector calculus; CO2 linear systems and eigenvalues by direct and iterative methods; CO3 vector spaces and linear transformations; CO4 applications using modern ICT tools."],
+[["assessment","marks","cie","see ","cca","pass","eligib","internal"],"<b>Assessment:</b> CIE 50 + SEE 50 = 100. CIE = average of two IA tests (25) + CCA (25: two objective tests of 7.5 each, plus a 10-mark lab activity or group seminar of max 4 students). Minimum: 20/50 in CIE to be eligible, 18/50 in SEE, and 40/100 overall to pass."],
+[["lab","python","matlab","scilab"],"<b>Lab activities:</b> (1) partial derivatives and Jacobian, (2) Taylor/Maclaurin series, (3) gradient, divergence, curl, (4) rank, RREF, Gauss elimination, (5) Gauss–Seidel, (6) eigenvalues/eigenvectors, (7) linear independence, (8) basis and dimension, (9) range space and null space, (10) verifying rank–nullity. Tools: Python (SymPy/NumPy), MATLAB, Scilab, Mathematica or Maxima."],
+[["textbook","book","reference"],"<b>Textbooks:</b> Grewal (Higher Engineering Mathematics, 44th Ed.), Kreyszig (Advanced Engineering Mathematics, 10th Ed.), Lipschutz &amp; Lipson (Linear Algebra, Schaum's, 4th Ed.). References include Strang, Lay, Poole, Stewart, Ramana, Bali &amp; Goyal and Williams."],
+[["module 1","module-1","module1"],"<b>Module 1 (Calculus):</b> partial differentiation, total derivative, composite functions, Jacobian, Taylor/Maclaurin series for two variables, maxima and minima. Ask about any of these."],
+[["module 2","module-2","module2","vector calculus"],"<b>Module 2 (Vector Calculus):</b> scalar/vector fields, gradient, directional derivative, divergence, curl, solenoidal and irrotational fields, scalar potential, polar coordinates, and curvilinear (cylindrical, spherical) coordinates."],
+[["module 3","module-3","module3"],"<b>Module 3:</b> row transformations, echelon form, rank, consistency, Gauss elimination, Gauss–Jordan, traffic flow, eigenvalues/eigenvectors, diagonalization, modal matrix."],
+[["module 4","module-4","module4"],"<b>Module 4 (Vector Space):</b> vector spaces, subspaces, span, independence, basis and dimension, row and column spaces, coordinate vector, inner products and orthogonality."],
+[["module 5","module-5","module5"],"<b>Module 5 (Linear Transformation):</b> definition, algebra of transformations, matrix of a transformation, singular/non-singular/invertible maps, rank and nullity, Rank–Nullity theorem."]
+];
+const SUG=["What is the Jacobian?","Conditions for maxima and minima","Define curl and divergence","Spherical coordinates scale factors","When is a system consistent?","How to find eigenvalues?","What is a basis and dimension?","State rank nullity theorem"];
+$("#sug").innerHTML=SUG.map(s=>`<button class="chip" onclick="$('#q').value=this.textContent;ask()">${s}</button>`).join("");
+function answer(q){q=" "+q.toLowerCase().replace(/[‑–]/g,"-")+" ";let best=null,bs=0;
+KB.forEach(e=>{let s=0;e[0].forEach(k=>{if(q.includes(k))s+=k.length});if(s>bs){bs=s;best=e}});
+return best?best[1]:"I could not match that to the syllabus. Try keywords such as Jacobian, Taylor series, maxima, gradient, divergence, curl, cylindrical, spherical, rank, Gauss–Jordan, eigenvalue, basis, subspace, linear transformation or rank–nullity."}
+function add(t,c,h){const d=document.createElement("div");d.className="b "+c;if(h){d.innerHTML=t;const b=document.createElement("button");b.className="say";b.textContent="Listen";b.onclick=()=>say(d.firstChild?d.textContent.replace("Listen",""):t);d.append(document.createElement("br"),b)}else d.textContent=t;$("#chat").append(d);$("#chat").scrollTop=1e9}
+function ask(){const q=$("#q").value.trim();if(!q)return;add(q,"u");$("#q").value="";setTimeout(()=>{const o=offlineSolve(q);add(o?o.replace(/</g,"&lt;").replace(/\n/g,"<br>"):answer(q),"a",1)},350)}
+$("#q").addEventListener("keydown",e=>{if(e.key==="Enter")ask()});
+
+/* voice */
+const sy=window.speechSynthesis;let spans=[],vi=0,vOn=0;
+function speakable(t){return t.replace(/∂/g," partial ").replace(/∇/g," del ").replace(/∫/g," integral of ").replace(/λ/g," lambda ").replace(/θ/g," theta ").replace(/φ/g," phi ").replace(/ρ/g," rho ").replace(/π/g," pi ").replace(/Σ|∑/g," sum of ").replace(/²/g," squared ").replace(/³/g," cubed ").replace(/√/g," square root of ").replace(/[−–]/g," minus ").replace(/×/g," times ").replace(/\+/g," plus ").replace(/=/g," equals ").replace(/\^/g," to the power ").replace(/≠/g," not equal to ").replace(/≤/g," less than or equal to ").replace(/≥/g," greater than or equal to ").replace(/→/g," gives ").replace(/⇔/g," if and only if ").replace(/\*/g," ").replace(/(^|[\s,(])-(?=\d)/g,"$1 minus ")}
+
+/* soft female voice */
+let FV=null,FS=0;
+const FEM=/neerja|heera|kalpana|swara|veena|lekha|aria|jenny|michelle|emma|\bava\b|sonia|libby|samantha|victoria|karen|tessa|moira|fiona|serena|allison|susan|zira|hazel|catherine|linda|natasha|clara|sara|nova|female|google uk english female|google us english|हिन्दी|raveena|priya|aditi|shruti/i;
+const MALE=/prabhat|ravi\b|hemant|david|\bmark\b|james|george|rishi|\bguy\b|daniel|alex\b|fred|ryan|brian|eric|christopher|roger|richard|sean|thomas|oliver|liam|aaron|arthur|gordon|\blee\b|\bmale\b|\bman\b|reed|eddy|jorge/i;
+function vsc(v){const n=v.name,m=n.replace(/female/ig,"");return(FEM.test(n)?10:0)-(MALE.test(m)?100:0)+(/en-IN/i.test(v.lang)?3:0)+(/natural|online|neural/i.test(n)?2:0)+(/^en/i.test(v.lang)?1:0)}
+function pickVoice(){const v=(sy?sy.getVoices():[]).filter(x=>/^(en|hi)/i.test(x.lang));if(!v.length)return;v.sort((a,b)=>vsc(b)-vsc(a));let sv="";try{sv=localStorage.getItem("spv")||""}catch(e){}
+FV=v.find(x=>x.name===sv)||v[0];FS=vsc(FV)<10?1:0;const o=$("#vs");if(o)o.innerHTML=v.map(x=>`<option value="${x.name}"${x===FV?" selected":""}>${x.name} (${x.lang})</option>`).join("")}
+if(sy){pickVoice();sy.onvoiceschanged=pickVoice}
+$("#vs").onchange=e=>{const v=sy.getVoices().find(x=>x.name===e.target.value);if(v){FV=v;FS=vsc(v)<10?1:0;try{localStorage.setItem("spv",v.name)}catch(x){}say("Hello, I am Spoorthi. How may I help you?")}};
+function mkU(t,rate){const u=new SpeechSynthesisUtterance(speakable(t));if(FV){u.voice=FV;u.lang=FV.lang}else u.lang="en-IN";u.rate=rate||.88;u.pitch=FS?1.4:1.12;u.volume=.9;window._u=u;return u}
+function say(t){if(!sy)return;sy.cancel();sy.speak(mkU(t,.9))}
+function vPlay(){if(!sy||!spans.length)return;sy.cancel();vOn=1;vi=0;nxt()}
+function nxt(){spans.forEach(x=>x.classList.remove("on"));if(!vOn||vi>=spans.length){vOn=0;return}
+const sp=spans[vi];sp.classList.add("on");sp.scrollIntoView({block:"center",behavior:"smooth"});
+const u=mkU(sp.textContent,+$("#vr").value);u.onend=()=>{vi++;nxt()};sy.speak(u)}
+function vPause(){sy.paused?sy.resume():sy.pause()}
+function vStop(){vOn=0;sy.cancel();spans.forEach(x=>x.classList.remove("on"))}
+
+/* quiz */
+const QZ=[
+[1,"If u = x²y, what is ∂u/∂x at the point (1, 2)?",["2","4","1","8"],1,"∂u/∂x = 2xy (treat y as constant). At (1,2): 2·1·2 = 4."],
+[1,"For u = x + y and v = xy, the Jacobian ∂(u,v)/∂(x,y) equals",["x + y","y − x","x − y","xy"],2,"J = u_x v_y − u_y v_x = (1)(x) − (1)(y) = x − y."],
+[1,"The stationary point (1, 0) of f = x² + y² − 2x is",["a maximum","a minimum","a saddle point","not a stationary point"],1,"f_x = 2x − 2 = 0 and f_y = 2y = 0 give (1,0). r = 2, s = 0, t = 2, so rt − s² = 4 > 0 and r > 0: minimum."],
+[1,"For polar coordinates x = r cosθ, y = r sinθ, the Jacobian ∂(x,y)/∂(r,θ) is",["1","r","r²","r sinθ"],1,"J = cosθ·r cosθ − (−r sinθ)(sinθ) = r(cos²θ + sin²θ) = r."],
+[2,"The magnitude of the gradient of φ = x² + y² + z² at (1, 2, 2) is",["3","6","9","12"],1,"∇φ = (2x, 2y, 2z) = (2,4,4) at the point, magnitude √(4+16+16) = 6."],
+[2,"The divergence of F = x i + y j + z k is",["0","1","3","x + y + z"],2,"∇·F = ∂x/∂x + ∂y/∂y + ∂z/∂z = 1 + 1 + 1 = 3."],
+[2,"The curl of the gradient of any scalar field φ is",["φ","the zero vector","a scalar","∇²φ"],1,"curl(grad φ) = 0 always, which is why a field with a scalar potential is irrotational."],
+[2,"The scale factors of spherical polar coordinates (r, θ, φ) are",["1, 1, 1","1, ρ, 1","1, r, r sinθ","r, r, r"],2,"h_r = 1, h_θ = r, h_φ = r sinθ."],
+[3,"The rank of the matrix [[1, 2],[2, 4]] is",["0","1","2","4"],1,"R2 → R2 − 2R1 gives a zero row, so one non-zero row remains: rank 1."],
+[3,"AX = B has a unique solution when",["rank A < rank [A|B]","rank A = rank [A|B] < n","rank A = rank [A|B] = n","B = 0 only"],2,"Consistent and rank equal to the number of unknowns n gives a unique solution."],
+[3,"The eigenvalues of [[4, 1],[2, 3]] are",["1 and 6","2 and 5","3 and 4","−2 and 5"],1,"λ² − 7λ + 10 = 0 (trace 7, determinant 12 − 2 = 10), so λ = 2 and 5."],
+[3,"The sum of the eigenvalues of a square matrix equals its",["determinant","rank","trace","order"],2,"Sum of eigenvalues = trace; product of eigenvalues = determinant."],
+[4,"Which set is a subspace of R²?",["{(x,y): x + y = 1}","{(x,y): x + y = 0}","{(x,y): x ≥ 0}","{(x,y): x² + y² = 1}"],1,"x + y = 0 contains (0,0) and is closed under addition and scalar multiplication. The others fail."],
+[4,"The dimension of the vector space of all 2×2 real matrices is",["2","3","4","8"],2,"A basis is the four matrices with a single 1, so the dimension is 4."],
+[4,"The vectors (1, 2) and (2, 4) are",["linearly independent","linearly dependent","orthogonal","a basis of R²"],1,"(2,4) = 2(1,2), so one is a multiple of the other: dependent."],
+[4,"For u = (1, 2, 3) and v = (2, −1, 0), the inner product ⟨u, v⟩ is",["0","1","4","−1"],0,"1·2 + 2·(−1) + 3·0 = 0, so the vectors are orthogonal."],
+[5,"A linear transformation T: R³ → R² has rank 2. By the Rank–Nullity theorem its nullity is",["0","1","2","3"],1,"rank + nullity = dim R³ = 3, so nullity = 3 − 2 = 1."],
+[5,"Which map from R² to R² is linear?",["T(x,y) = (x + 1, y)","T(x,y) = (xy, y)","T(x,y) = (x + y, x − y)","T(x,y) = (x², y)"],2,"Only (x+y, x−y) satisfies T(u+v) = T(u)+T(v) and T(cu) = cT(u). The first one does not send 0 to 0."],
+[5,"T is non-singular if and only if",["ker T = V","ker T = {0}","Im T = {0}","rank T = 0"],1,"Non-singular means the kernel contains only the zero vector (T is one-one)."],
+[5,"The matrix of T(x,y) = (2x + y, x − 3y) in the standard basis is",["[[2,1],[1,−3]]","[[2,1],[−3,1]]","[[1,2],[−3,1]]","[[2,−3],[1,1]]"],0,"Rows give the coefficients: first row (2,1), second row (1,−3)."]];
+let qi=0,sc=0,ms=[0,0,0,0,0,0],done=0;
+function qr(){const b=$("#qz");if(qi>=QZ.length){const n=QZ.length;b.innerHTML=`<h3 style="color:var(--c1)">Final score: ${sc} / ${n}</h3><p style="margin:8px 0">${sc>=16?"Excellent work!":sc>=10?"Good progress. Revise the modules below.":"Keep practising. Read the explanations and retry."}</p>`+[1,2,3,4,5].map(m=>`<p>Module ${m}: ${ms[m]} / 4</p>`).join("")+`<button onclick="qi=0;sc=0;ms=[0,0,0,0,0,0];qr()" style="margin-top:12px">Restart quiz</button>`;return}
+const q=QZ[qi];done=0;b.innerHTML=`<div class="bar"><i style="width:${qi/QZ.length*100}%"></i></div><div class="hr" style="color:var(--c2)">Module ${q[0]} · Question ${qi+1} of 20</div><h3 style="margin:6px 0 10px;font-size:19px">${q[1]}</h3>`+q[2].map((o,i)=>`<button class="opt" onclick="pick(${i})">${o}</button>`).join("")+`<div id="fb"></div>`}
+function pick(i){if(done)return;done=1;const q=QZ[qi],bs=document.querySelectorAll(".opt");bs[q[3]].classList.add("ok");if(i==q[3]){sc++;ms[q[0]]++}else bs[i].classList.add("bad");
+$("#fb").innerHTML=`<p style="margin:12px 0"><b>${i==q[3]?"Correct. ":"Not quite. "}</b>${q[4]}</p><button class="say" onclick="say('${q[1].replace(/'/g,"")} The correct answer is ${q[2][q[3]].replace(/'/g,"")}. ${q[4].replace(/'/g,"")}')">Listen to explanation</button> <button onclick="qi++;qr()" style="margin-left:8px">${qi==QZ.length-1?"See score":"Next question"}</button>`}
+qr();
+
+/* Spoorthi assistant */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let wakeRec=null,wakeOn=0,busy=0,aimg=null,aTok=0,rec=null;
+const AC=$("#ac"),st=t=>{$("#as").textContent=t;$("#mp").textContent=t};
+function aOpen(){$("#ap").classList.add("show")}
+function aClose(){$("#ap").classList.remove("show");aTok++;sy.cancel();if(rec)try{rec.abort()}catch(e){}idle();st(wakeOn?"listening for “Hey Spoorthi”":"say “Hey Spoorthi” to call me")}
+function aBub(t,c){const d=document.createElement("div");d.className="b "+c;d.textContent=t;AC.append(d);AC.scrollTop=1e9;return d}
+function fill(el,t){const o=[];t.split(/\n+/).filter(x=>x.trim()).forEach(l=>{const p=document.createElement("p");(l.match(/[^.!?]+[.!?]*(\s+|$)/g)||[l]).forEach(n=>{const s=document.createElement("span");s.className="sp";s.textContent=n;p.append(s);o.push(s)});if(/^(Step \d+|Final answer|Problem|Module)/i.test(l))p.style.color="var(--c1)";el.append(p)});return o}
+function aSpeak(list,done){sy.cancel();const my=++aTok;let i=0;st("speaking");(function n(){if(my!==aTok)return;list.forEach(x=>x.classList.remove("on"));if(i>=list.length){done&&done();return}const sp=list[i];sp.classList.add("on");AC.scrollTop=sp.offsetTop-AC.offsetTop-60;const u=mkU(sp.textContent,.9);let adv=0;const go=()=>{if(adv||my!==aTok)return;adv=1;clearTimeout(tm);i++;n()};const tm=setTimeout(go,sp.textContent.length*110+2500);u.onend=u.onerror=go;sy.speak(u)})()}
+function aSay(t,done){const d=aBub("","a");aSpeak(fill(d,t),done)}
+function idle(){busy=0;lbl();st(wakeOn?"listening for “Hey Spoorthi”":"say “Hey Spoorthi” to call me");if(wakeOn)setTimeout(wakeLoop,400)}
+function isWake(t){let m=t.match(/\b(spoo?r+\w*|spu+r\w*|sphu\w*|sport\w*|spoo+\w*|spook\w*|sboo+\w*|spirit\w*|spurt\w*)\b/i);if(!m)m=t.match(/\b(?:hey|hello|hi|okay|ok)\s+(s[a-z]{3,9})\b/i);return m?t.slice(m.index+m[0].length).trim():null}
+function lbl(){$("#lo").textContent=wakeOn&&!busy?"Hey Spoorthi 🎤":"Spoorthi"}
+function wakeLoop(){if(!SR||!wakeOn||busy)return;try{wakeRec&&wakeRec.abort()}catch(e){}wakeRec=new SR();wakeRec.lang="en-IN";wakeRec.continuous=true;wakeRec.interimResults=true;
+wakeRec.onresult=e=>{if(busy)return;const t=Array.from(e.results).slice(e.resultIndex).map(r=>r[0].transcript).join(" ");st("heard: "+t.slice(-35));const rest=isWake(t);if(rest===null)return;if(rest.length<3||e.results[e.results.length-1].isFinal)wake(rest)};
+wakeRec.onend=()=>{if(wakeOn&&!busy)setTimeout(wakeLoop,300)};
+wakeRec.onerror=e=>{const x=e.error;if(x==="not-allowed"||x==="service-not-allowed"){wakeOn=0;lbl();st("Microphone blocked. Click the lock icon in the address bar, allow Microphone, then reload. If this page is inside a preview window, open index.html directly in Chrome or Edge.")}else if(x==="audio-capture"){wakeOn=0;st("No microphone found. Connect one and reload.")}else if(x==="network")st("Speech service needs internet (Chrome or Edge).")};
+try{wakeRec.start();st("listening for “Hey Spoorthi”");lbl()}catch(e){}}
+function wake(rest){busy=1;lbl();if(wakeRec){wakeRec.onend=null;try{wakeRec.abort()}catch(e){}}aOpen();if(rest&&rest.length>8)handle(rest);else aSay("Hello! How may I help you?",listenCmd)}
+function startMic(){if(!SR){st("This browser has no speech recognition. Open the page in Chrome or Edge.");return}
+if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){wakeOn=1;wakeLoop();return}
+navigator.mediaDevices.getUserMedia({audio:true}).then(m=>{m.getTracks().forEach(t=>t.stop());wakeOn=1;wakeLoop()}).catch(e=>{wakeOn=0;lbl();st("Microphone error ("+e.name+"). Allow the microphone for this page and reload. If it is inside a preview window, open index.html directly in Chrome or Edge.")})}
+document.addEventListener("pointerdown",()=>{if(!wakeOn)startMic()},{once:true});
+if(!SR)st("Voice calling needs Chrome or Edge. You can still tap Spoorthi and type.");
+function launch(){if(!SR)aBub("Voice calling needs Chrome or Edge. You can still type your problem here.","a");else startMic();wake("")}
+function listenCmd(){if(!SR){idle();return}rec=new SR();rec.lang="en-IN";let got=0;st("listening… speak now");
+rec.onresult=e=>{got=1;handle(e.results[0][0].transcript)};
+rec.onend=()=>{if(!got){aBub("I did not catch that. Type your problem below, tap the mic, or say Spoorthi again.","a");idle()}};rec.onerror=()=>{};try{rec.start()}catch(e){idle()}}
+function micBtn(){busy=1;sy.cancel();aTok++;if(wakeRec){wakeRec.onend=null;try{wakeRec.abort()}catch(e){}}listenCmd()}
+function sendA(){const t=$("#at").value.trim();if(!t&&!aimg)return;$("#at").value="";busy=1;if(wakeRec){wakeRec.onend=null;try{wakeRec.abort()}catch(e){}}handle(t||"Solve the problem in this photo.")}
+$("#at").addEventListener("keydown",e=>{if(e.key==="Enter")sendA()});
+function handle(text){aBub(text,"u");busy=1;solveA(text)}
+
+/* offline step-by-step solver */
+const g=x=>+(+x).toFixed(4);
+function parseM(t){const m=t.match(/\[\s*\[[^\]]*\](?:\s*,\s*\[[^\]]*\])*\s*\]/);if(!m)return null;try{const M=JSON.parse(m[0]);if(Array.isArray(M)&&M.every(r=>Array.isArray(r)&&r.length==M[0].length&&r.every(Number.isFinite)))return M}catch(e){}return null}
+function elim(A,full){const M=A.map(r=>r.slice()),n=M.length,c=M[0].length,S=[];let r=0;
+for(let j=0;j<c&&r<n;j++){let p=-1;for(let i=r;i<n;i++)if(Math.abs(M[i][j])>1e-9){p=i;break}if(p<0)continue;
+if(p!=r){[M[r],M[p]]=[M[p],M[r]];S.push(`Swap row ${r+1} and row ${p+1}, so the pivot sits in row ${r+1}, column ${j+1}.`)}
+if(full&&Math.abs(M[r][j]-1)>1e-9){const d=M[r][j];M[r]=M[r].map(v=>v/d);S.push(`Divide row ${r+1} by ${g(d)} to make the pivot equal to 1.`)}
+for(let i=full?0:r+1;i<n;i++){if(i==r)continue;const k=M[i][j];if(Math.abs(k)<1e-9)continue;const q=k/M[r][j];M[i]=M[i].map((v,x)=>v-q*M[r][x]);
+S.push(`Row ${i+1} becomes row ${i+1} ${q<0?"plus "+g(-q):"minus "+g(q)} times row ${r+1}, which makes the entry in column ${j+1} zero.`)}r++}
+return{M,S,rank:r}}
+const rows=M=>M.map((r,i)=>`Row ${i+1}: ${r.map(g).join(", ")}.`).join("\n");
+function offlineSolve(t){const L=t.toLowerCase(),M=parseM(t);
+if(M&&/eigen/.test(L)&&M.length==2&&M[0].length==2){const[a,b]=M[0],[c,d]=M[1],tr=a+d,D=a*d-b*c,disc=tr*tr-4*D;
+let o=`Problem: find the eigenvalues and eigenvectors of the matrix with first row ${a}, ${b} and second row ${c}, ${d}.\nModule and method: Module 3, the characteristic equation.\nStep 1: Eigenvalues satisfy the determinant of A minus lambda I equals zero. For a two by two matrix this becomes lambda squared minus trace times lambda plus determinant equals zero.\nStep 2: The trace is ${a} plus ${d}, which is ${g(tr)}. The determinant is ${a} times ${d} minus ${b} times ${c}, which is ${g(D)}.\nStep 3: So the characteristic equation is lambda squared minus ${g(tr)} lambda plus ${g(D)} equals zero.\n`;
+if(disc<0)return o+`Step 4: The discriminant is ${g(disc)}, which is negative, so the eigenvalues are complex: ${g(tr/2)} plus or minus ${g(Math.sqrt(-disc)/2)} i. Real eigenvectors do not exist.\nFinal answer: the eigenvalues are ${g(tr/2)} plus and minus ${g(Math.sqrt(-disc)/2)} i.`;
+const l=[(tr+Math.sqrt(disc))/2,(tr-Math.sqrt(disc))/2];o+=`Step 4: The discriminant is ${g(disc)}. Solving gives lambda equals ${g(l[0])} and lambda equals ${g(l[1])}. As a check, they add up to the trace and multiply to the determinant.\n`;
+l.forEach((x,i)=>{const v=Math.abs(b)>1e-9?[b,x-a]:Math.abs(c)>1e-9?[x-d,c]:(Math.abs(x-a)<1e-9?[1,0]:[0,1]);o+=`Step ${5+i}: For lambda equals ${g(x)}, solve A minus lambda I times X equals zero. This gives the eigenvector ${g(v[0])}, ${g(v[1])}, or any non-zero multiple of it.\n`});
+return o+`Final answer: the eigenvalues are ${g(l[0])} and ${g(l[1])}, with the eigenvectors found above.`}
+if(M&&/(solve|system|equation|gauss|augmented)/.test(L)&&M[0].length==M.length+1){const A=M.map(r=>r.slice(0,-1)),R=elim(M,true),rA=elim(A,false).rank,rK=R.rank,n=A[0].length;
+let o=`Problem: solve the system of ${M.length} equations given by the augmented matrix.\nModule and method: Module 3, the Gauss Jordan method.\nWe reduce the augmented matrix to reduced row echelon form using row operations.\n`+R.S.map((x,i)=>`Step ${i+1}: ${x}`).join("\n")+`\nThe reduced matrix is:\n${rows(R.M)}\nRank of A is ${rA}. Rank of the augmented matrix is ${rK}. Number of unknowns is ${n}.\n`;
+if(rA<rK)return o+"Final answer: the ranks are different, so the system is inconsistent and has no solution.";
+if(rA==n)return o+`Final answer: the ranks are equal to the number of unknowns, so the solution is unique: ${R.M.slice(0,n).map((r,i)=>"x"+(i+1)+" equals "+g(r[n])).join(", ")}.`;
+return o+`Final answer: the ranks are equal but less than the number of unknowns, so there are infinitely many solutions with ${n-rA} free variable${n-rA>1?"s":""}.`}
+if(M&&/rank/.test(L)&&!/nullity/.test(L)){const R=elim(M,false);return `Problem: find the rank of the given ${M.length} by ${M[0].length} matrix.\nModule and method: Module 3, reduction to echelon form.\nRank equals the number of non-zero rows in the echelon form.\n`+(R.S.length?R.S.map((x,i)=>`Step ${i+1}: ${x}`).join("\n"):"The matrix is already in echelon form.")+`\nThe echelon form is:\n${rows(R.M)}\nFinal answer: the number of non-zero rows is ${R.rank}, so the rank is ${R.rank}.`}
+const V=[...t.matchAll(/\(\s*(-?[\d.]+(?:\s*,\s*-?[\d.]+)+)\s*\)/g)].map(m=>m[1].split(",").map(Number));
+if(/(dot|inner|orthogonal|angle)/.test(L)&&V.length>=2&&V[0].length==V[1].length){const[u,v]=V,dp=u.reduce((s,x,i)=>s+x*v[i],0),nu=Math.hypot(...u),nv=Math.hypot(...v);
+let o=`Problem: find the inner product of the vectors ${u.join(", ")} and ${v.join(", ")}.\nModule and method: Module 4, the standard inner product.\nStep 1: Multiply corresponding components and add: ${u.map((x,i)=>x+" times "+v[i]).join(", plus ")}, which equals ${g(dp)}.\n`;
+if(Math.abs(dp)<1e-9)return o+"Final answer: the inner product is zero, so the vectors are orthogonal.";
+return o+`Step 2: The lengths are ${g(nu)} and ${g(nv)}. Step 3: The cosine of the angle is ${g(dp)} divided by the product of the lengths, which is ${g(dp/(nu*nv))}, so the angle is ${g(Math.acos(Math.max(-1,Math.min(1,dp/(nu*nv))))*180/Math.PI)} degrees.\nFinal answer: the inner product is ${g(dp)}.`}
+return null}
+function solveA(text){const o=offlineSolve(text);if(o){aSay(o,idle);return}const tmp=document.createElement("div");tmp.innerHTML=answer(text);let t=tmp.textContent;if(t.startsWith("I could not match"))t="I can solve these step by step: eigenvalues of a two by two matrix, the rank of a matrix, a system given as an augmented matrix, and the inner product of two vectors. For example, type: rank of [[1,2],[2,4]]. I can also explain any concept from the five modules, like the Jacobian or the rank nullity theorem.";aSay(t,idle)}
+</script>
+<script>
+/* ===== Module AI v2: step-by-step problem solver + VTU syllabus gate (1BMATS101) ===== */
+(function(){
+const N=v=>['n',v],V=s=>['v',s],isN=n=>n[0]=='n',key=n=>JSON.stringify(n);
+const cf=n=>isN(n)?[n[1],N(1)]:(n[0]=='*'&&isN(n[1]))?[n[1][1],n[2]]:[1,n];
+function neg(a){return mul(N(-1),a)}
+function add(a,b){if(isN(a)&&!a[1])return b;if(isN(b)&&!b[1])return a;if(isN(a)&&isN(b))return N(a[1]+b[1]);
+const[c1,r1]=cf(a),[c2,r2]=cf(b);if(!isN(a)&&!isN(b)&&key(r1)==key(r2))return mul(N(c1+c2),r1);
+if(a[0]=='+'&&!isN(a[2])&&!isN(b)){const[c3,r3]=cf(a[2]);if(key(r3)==key(r2))return add(a[1],mul(N(c3+c2),r2))}return['+',a,b]}
+function mul(a,b){if(isN(a)&&!a[1]||isN(b)&&!b[1])return N(0);if(isN(a)&&a[1]==1)return b;if(isN(b)&&b[1]==1)return a;if(isN(a)&&isN(b))return N(a[1]*b[1]);
+if(isN(a)&&b[0]=='*'&&isN(b[1]))return mul(N(a[1]*b[1][1]),b[2]);if(isN(b))return mul(b,a);if(!isN(a)&&!isN(b)){const[c1,r1]=cf(a),[c2,r2]=cf(b);if(c1!=1||c2!=1)return mul(N(c1*c2),mul(r1,r2));const bs=n=>n[0]=='^'&&isN(n[2])?[n[1],n[2][1]]:[n,1],x=bs(a),y=bs(b);if(a[0]=='*'&&!isN(a[1])){const m=mul(a[2],b);if(key(m)!=key(['*',a[2],b]))return mul(a[1],m)}if(key(x[0])==key(y[0]))return pw(x[0],N(x[1]+y[1]))}return['*',a,b]}
+function pw(a,b){if(isN(b)){if(!b[1])return N(1);if(b[1]==1)return a;if(isN(a))return N(Math.pow(a[1],b[1]))}return['^',a,b]}
+const fn=(f,a)=>['f',f,a];
+function d(n,x){switch(n[0]){case'n':return N(0);case'v':return N(n[1]==x?1:0);
+case'+':return add(d(n[1],x),d(n[2],x));
+case'*':return add(mul(d(n[1],x),n[2]),mul(n[1],d(n[2],x)));
+case'^':{const a=n[1],b=n[2];if(isN(b))return mul(mul(b,pw(a,N(b[1]-1))),d(a,x));
+if(isN(a))return mul(mul(n,fn('ln',a)),d(b,x));if(a[0]=='v'&&a[1]=='e')return mul(n,d(b,x));
+return mul(n,add(mul(d(b,x),fn('ln',a)),mul(mul(b,pw(a,N(-1))),d(a,x))))}
+case'f':{const a=n[2],f=n[1];let o;
+if(f=='sin')o=fn('cos',a);else if(f=='cos')o=neg(fn('sin',a));else if(f=='tan')o=pw(fn('cos',a),N(-2));else if(f=='exp')o=n;else if(f=='ln')o=pw(a,N(-1));
+else if(f=='sec')o=mul(n,fn('tan',a));else if(f=='sinh')o=fn('cosh',a);else if(f=='cosh')o=fn('sinh',a);else if(f=='atan')o=pw(add(N(1),pw(a,N(2))),N(-1));
+else if(f=='asin')o=pw(add(N(1),neg(pw(a,N(2)))),N(-.5));else throw 0;return mul(o,d(a,x))}}}
+function ev(n,e){switch(n[0]){case'n':return n[1];case'v':{const v=e[n[1]];return v===undefined?NaN:v}
+case'+':return ev(n[1],e)+ev(n[2],e);case'*':return ev(n[1],e)*ev(n[2],e);case'^':return Math.pow(ev(n[1],e),ev(n[2],e));
+case'f':{const a=ev(n[2],e),f=n[1];return f=='exp'?Math.exp(a):f=='ln'?Math.log(a):f=='sec'?1/Math.cos(a):Math[f](a)}}}
+const SUP={'⁰':0,'¹':1,'²':2,'³':3,'⁴':4,'⁵':5,'⁶':6,'⁷':7,'⁸':8,'⁹':9};
+const nz=s=>s.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻]+/g,m=>{const g=m[0]=='⁻',q=[...m].filter(c=>c!='⁻').map(c=>SUP[c]).join('');return '^'+(g?'(-'+q+')':q)})
+.replace(/[−–—]/g,'-').replace(/[×·]/g,'*').replace(/÷/g,'/').replace(/√/g,'sqrt').replace(/π/g,'pi').replace(/\btheta\b/gi,'θ').replace(/\bphi\b/gi,'φ').replace(/î/g,'i').replace(/ĵ/g,'j').replace(/k\u0302/g,'k');
+const FN=/^(sinh|cosh|asin|atan|sqrt|sin|cos|tan|sec|exp|log|ln)$/;
+function parse(s){const T=[...nz(s).matchAll(/(\d+\.?\d*|\.\d+|\p{L}+|[-+*\/^(),]|\S)/gu)].flatMap(m=>/^\p{L}+$/u.test(m[1])?m[1].match(/sinh|cosh|asin|atan|sqrt|sin|cos|tan|sec|exp|log|ln|pi|\p{L}/gu):[m[1]]);let p=0;
+const pk=()=>T[p],isA=t=>t&&/^[\d.\p{L}(]/u.test(t);
+const ex=()=>{let a=tm();while(pk()=='+'||pk()=='-'){const o=T[p++],b=tm();a=o=='+'?add(a,b):add(a,neg(b))}return a};
+const tm=()=>{let a=un();for(;;){const t=pk();if(t=='*'){p++;a=mul(a,un())}else if(t=='/'){p++;a=mul(a,pw(un(),N(-1)))}else if(isA(t))a=mul(a,un());else return a}};
+const un=()=>{if(pk()=='-'){p++;return neg(un())}if(pk()=='+'){p++;return un()}return pwr()};
+const pwr=()=>{const a=pr();if(pk()=='^'){p++;const g=pk()=='-'?(p++,-1):1;const b=pr();return pw(a,g<0?neg(b):b)}return a};
+const pr=()=>{const t=T[p++];if(t===undefined)throw 0;if(/^[\d.]/.test(t))return N(+t);if(t=='('){const a=ex();if(T[p++]!=')')throw 0;return a}
+if(FN.test(t)){let e=null;if(pk()=='^'){p++;e=pr()}let a=pk()=='('?pr():pwr();if(isN(a)&&isA(pk()))a=mul(a,pwr());const r=t=='sqrt'?pw(a,N(.5)):fn(t=='log'?'ln':t,a);return e?pw(r,e):r}
+if(t=='pi')return V('pi');if(/^\p{L}$/u.test(t))return V(t);throw 0};
+const r=ex();if(p<T.length)throw 0;return r}
+const fr=x=>{if(!isFinite(x))return String(x);for(let q=1;q<=12;q++){const n=Math.round(x*q);if(Math.abs(x-n/q)<1e-9)return q==1?''+n:n+'/'+q}return ''+(+x.toFixed(4))};
+const at=n=>n[0]=='v'||n[0]=='^'&&n[1][0]=='v',allAt=n=>at(n)||n[0]=='*'&&allAt(n[1])&&allAt(n[2]);
+function P(n,pr=0){let s,q;switch(n[0]){
+case'n':return pr>=3&&(n[1]<0||!Number.isInteger(n[1]))?'('+fr(n[1])+')':fr(n[1]);
+case'v':return n[1]=='pi'?'π':n[1];
+case'+':{if(n[2][0]=='+')return P(['+',['+',n[1],n[2][1]],n[2][2]],pr);const b=n[2],g=b[0]=='*'&&isN(b[1])&&b[1][1]<0||isN(b)&&b[1]<0;s=P(n[1],1)+(g?' - '+P(neg(b),2):' + '+P(b,1));q=1;break}
+case'*':{const a=n[1],b=n[2];q=2;
+if(b[0]=='^'&&isN(b[2])&&b[2][1]<0)s=P(a,2)+'/'+P(pw(b[1],N(-b[2][1])),3);
+else if(isN(a)&&a[1]==-1)s='-'+P(b,2);
+else if((isN(a)||allAt(a))&&allAt(b))s=P(a,2)+P(b,2);
+else if(isN(a)&&b[0]=='+')s=P(a,2)+'('+P(b)+')';
+else s=P(a,2)+'*'+P(b,2);break}
+case'^':{q=3;const b=n[2];if(isN(b)&&b[1]==.5)return'√('+P(n[1])+')';if(isN(b)&&b[1]<0)s='1/'+P(pw(n[1],N(-b[1])),3);else s=P(n[1],4)+'^'+P(b,4);break}
+case'f':return n[1]+'('+P(n[2])+')'}
+return q<pr?'('+s+')':s}
+const vs=(n,o=new Set)=>{if(n[0]=='v'){if(n[1]!='e'&&n[1]!='pi')o.add(n[1])}else if(n[0]=='f')vs(n[2],o);else if('+*^'.includes(n[0]))vs(n[1],o),vs(n[2],o);return o};
+const ORD='xyzuvwrθφt',ord=(a,b)=>(ORD.indexOf(a)<0?99:ORD.indexOf(a))-(ORD.indexOf(b)<0?99:ORD.indexOf(b));
+const sb=(n,m)=>n[0]=='v'?(m[n[1]]||n):n[0]=='f'?fn(n[1],sb(n[2],m)):'+*^'.includes(n[0])?(n[0]=='+'?add:n[0]=='*'?mul:pw)(sb(n[1],m),sb(n[2],m)):n;
+const BASE={e:Math.E,pi:Math.PI},EV=(n,e)=>ev(n,{...BASE,...e});
+const g4=x=>+(+x).toFixed(4);
+function defs(t,fb){const o={};for(const m of nz(t).matchAll(/(?:^|[\s,;(∇])([A-Za-zφθρ])\s*(?:\(\s*[a-zθφ](?:\s*,\s*[a-zθφ])*\s*\))?\s*=\s*(.+?)(?=\s*(?:,|;|\band\b|\bfind\b|\bshow\b|\bprove\b|\bverify\b|\bevaluate\b|\bdetermine\b|\bat\b|\babout\b|\baround\b|\bnear\b|\bup to\b|\bwhen\b|\bthen\b|\bwhere\b|\bis\b|\bwith\b|\bw\.?r\.?t\b|\.\s|\.?$))/gi))if(!(m[1] in o)){try{parse(m[2]);o[m[1]]=m[2]}catch(e){}}if(fb&&!Object.keys(o).length){const m=nz(t).match(/\b(?:of|for|function|expand)\s+(?:the\s+function\s+)?([^,;=]+)$/i);if(m){const e=m[1].split(/\s+(?:about|at|up to|near|around|in the)\b/i)[0].trim();try{parse(e);o.f=e}catch(x){}}}return o}
+const spl=s=>{const o=[];let k=0,c='';for(const ch of s){if('(['.includes(ch))k++;if(')]'.includes(ch))k--;if(ch==','&&!k){o.push(c);c=''}else c+=ch}o.push(c);return o.map(x=>x.trim()).filter(x=>x)};
+const PT=/(?:\bat|\bpoint|\babout)\s*(?:the point\s*)?\(\s*(-?[\d.]+(?:\s*,\s*-?[\d.]+)+)\s*\)/i;
+const point=t=>{const m=nz(t).match(PT);return m?m[1].split(',').map(Number):null};
+function vecF(t){t=nz(t);const i=t.search(/=\s*[(<\[]/);if(i>=0){const s=t.slice(t.indexOf('(',i)+1);let k=1,j=0;for(;j<s.length&&k;j++){if(s[j]=='(')k++;if(s[j]==')')k--}const c=spl(s.slice(0,j-1));if(c.length==3)try{return c.map(parse)}catch(e){}}
+let s=t.slice(t.lastIndexOf('=')+1).split(/\b(?:at|is|show|find|prove|verify|and|are|then|also)\b/i)[0];const p=s.split(/\s*\b[ijk]\b\s*/).filter(x=>x.trim());if(p.length==3)try{return p.map(parse)}catch(e){}return null}
+const dirv=s=>{s=nz(s).replace(PT,'').replace(/([+-])\s+/g,'$1');let m=s.match(/\(\s*(-?[\d.]+(?:\s*,\s*-?[\d.]+)+)\s*\)/);if(m)return m[1].split(',').map(Number);const o=[0,0,0];let ok=0;
+for(const q of s.matchAll(/(^|[\s+\-])(\d*\.?\d*)([ijk])\b/g)){o['ijk'.indexOf(q[3])]=(q[1]=='-'?-1:1)*(q[2]===''?1:+q[2]);ok=1}return ok?o:null};
+const steps=(h,m,S,fa)=>'Problem: '+h+'\nModule and method: '+m+'\n'+S.map((x,i)=>'Step '+(i+1)+': '+x).join('\n')+'\nFinal answer: '+fa;
+const vec=a=>'('+a.map(x=>P(x)).join(', ')+')',nv=a=>'('+a.map(fr).join(', ')+')';
+const envOf=(X,p)=>Object.fromEntries(X.map((x,i)=>[x,p[i]]));
+const zero=(n,X)=>[0,1,2,3].every(i=>Math.abs(EV(n,envOf(X,X.map((_,j)=>.31+.47*i+(.23+.17*i)*j))))<1e-9);
+const det=M=>M.length==2?add(mul(M[0][0],M[1][1]),neg(mul(M[0][1],M[1][0]))):M[0].reduce((s,_,j)=>add(s,mul(mul(N(j%2?-1:1),M[0][j]),det(M.slice(1).map(r=>r.filter((_,c)=>c!=j))))),N(0));
+function guess(J,X){const pts=[0,1,2].map(i=>({...BASE,...envOf(X,X.map((_,j)=>.37+.51*i+(.29+.13*i)*j))}));let C=[{f:()=>1,s:''}];
+X.forEach(x=>{const o=[];C.forEach(c=>[0,1,2].forEach(p=>o.push({f:e=>c.f(e)*Math.pow(e[x],p),s:c.s+(p?x+(p>1?'^'+p:''):'')})));C=o});
+const all=[...C];C.forEach(c=>X.forEach(x=>['sin','cos'].forEach(f=>all.push({f:e=>c.f(e)*Math[f](e[x]),s:c.s+f+'('+x+')'}))));
+for(const c of all){const k=ev(J,pts[0])/c.f(pts[0]);if(!isFinite(k)||!k)continue;if(pts.slice(1).every(p=>Math.abs(ev(J,p)-k*c.f(p))<1e-9))return(k==1?'':k==-1?'-':fr(k))+c.s||'1'}return null}
+/* ---------- solvers ---------- */
+function sJac(t,L){if(!/jacobian|(?<![a-z])[∂d]\s*\(\s*[a-z]\s*,\s*[a-z]/.test(L))return null;const D=defs(t);let F,X;
+const m=nz(t).match(/(?<![a-z])[∂d]\s*\(\s*([a-z])\s*,\s*([a-z])(?:\s*,\s*([a-z]))?\s*\)\s*\/\s*[∂d]\s*\(\s*([a-zθφ])\s*,\s*([a-zθφ])(?:\s*,\s*([a-zθφ]))?\s*\)/i);
+if(m){F=[m[1],m[2],m[3]].filter(Boolean);X=[m[4],m[5],m[6]].filter(Boolean)}else F=['u','v','w'].filter(k=>D[k]);
+if(F.length<2||F.some(k=>!D[k]))return null;const fs=F.map(k=>parse(D[k]));
+if(!X){const s=new Set;fs.forEach(f=>vs(f,s));F.forEach(k=>s.delete(k));X=[...s].sort(ord).slice(0,F.length)}if(X.length!=F.length)return null;
+const M=fs.map(f=>X.map(x=>d(f,x))),S=['The Jacobian is the determinant of the matrix of first-order partial derivatives of ('+F+') with respect to ('+X+').'];
+S.push('Partial derivatives: '+F.map((k,i)=>X.map((x,j)=>'∂'+k+'/∂'+x+' = '+P(M[i][j])).join('; ')).join('. '));
+const J=det(M);S.push('Expand the determinant: J = '+P(J));const gs=guess(J,X);if(gs&&gs!=P(J))S.push('Using sin²θ + cos²θ = 1 this simplifies to J = '+gs);
+return steps('find the Jacobian ∂('+F+')/∂('+X+') for '+F.map(k=>k+' = '+D[k]).join(', ')+'.','Module 1, Jacobian.',S,'∂('+F+')/∂('+X+') = '+(gs||P(J))+'.')}
+function sPartial(t,L){if(!/partial|∂|euler|homogeneous|\bu_?x|second order/.test(L))return null;const D=defs(t,1),k=Object.keys(D)[0];if(!k)return null;const f=parse(D[k]),X=[...vs(f)].sort(ord);if(!X.length)return null;
+const S=X.map(x=>'∂'+k+'/∂'+x+' = '+P(d(f,x))+' (other variables treated as constants).');const ans=X.map(x=>'∂'+k+'/∂'+x+' = '+P(d(f,x))).join('; ');
+if(X.length==2){const[a,b]=X,fx=d(f,a),fy=d(f,b);S.push('Second order: ∂²'+k+'/∂'+a+'² = '+P(d(fx,a))+'; ∂²'+k+'/∂'+b+'² = '+P(d(fy,b))+'; ∂²'+k+'/∂'+a+'∂'+b+' = '+P(d(fx,b))+'; ∂²'+k+'/∂'+b+'∂'+a+' = '+P(d(fy,a))+'.');
+S.push(zero(add(d(fx,b),neg(d(fy,a))),X)?'The mixed derivatives are equal, as expected for continuous functions.':'The mixed derivatives differ.')}
+if(/euler|homogeneous/.test(L)){const p=X.map((_,i)=>.7+.4*i),e1=envOf(X,p),e2=envOf(X,p.map(v=>2*v)),n=Math.log2(EV(f,e2)/EV(f,e1)),lhs=X.reduce((s,x,i)=>s+p[i]*EV(d(f,x),e1),0);
+S.push('Euler check: scaling every variable by 2 multiplies '+k+' by 2^n with n = '+fr(n)+'. Then '+X.map(x=>x+'·∂'+k+'/∂'+x).join(' + ')+' = '+fr(+lhs.toFixed(6))+' and n·'+k+' = '+fr(+(n*EV(f,e1)).toFixed(6))+' at a test point, so it equals n'+k+'.')}
+return steps('find the partial derivatives of '+k+' = '+D[k]+'.','Module 1, partial differentiation.',S,ans+'.')}
+function sTot(t,L){if(!/total derivative|composite|d[uzwf]\/dt|d[uzwf]\/d[a-z]\b/.test(L))return null;const D=defs(t),K=Object.keys(D);
+const dep=K.find(k=>[...vs(parse(D[k]))].every(v=>K.includes(v)&&v!=k));if(!dep)return null;const f=parse(D[dep]),X=[...vs(f)].sort(ord);
+const tv=[...new Set(X.flatMap(x=>[...vs(parse(D[x]))]))].filter(v=>!K.includes(v))[0];if(!tv)return null;
+const S=['Chain rule: d'+dep+'/d'+tv+' = '+X.map(x=>'(∂'+dep+'/∂'+x+')(d'+x+'/d'+tv+')').join(' + ')+'.',X.map(x=>'∂'+dep+'/∂'+x+' = '+P(d(f,x))+', d'+x+'/d'+tv+' = '+P(d(parse(D[x]),tv))).join('; ')+'.'];
+const m={};X.forEach(x=>m[x]=parse(D[x]));let tot=N(0);X.forEach(x=>tot=add(tot,mul(sb(d(f,x),m),d(m[x],tv))));S.push('Substitute '+X.map(x=>x+' = '+D[x]).join(', ')+' to express everything in '+tv+'.');
+const tv0=nz(t).match(new RegExp('\\b'+tv+'\\s*=\\s*(-?[\\d.]+)\\s*$|at\\s+'+tv+'\\s*=\\s*(-?[\\d.]+)'));let ex='';if(tv0)ex=' At '+tv+' = '+(tv0[1]||tv0[2])+' the value is '+fr(EV(tot,{[tv]:+(tv0[1]||tv0[2])}))+'.';
+return steps('find d'+dep+'/d'+tv+' for '+dep+' = '+D[dep]+' with '+X.map(x=>x+' = '+D[x]).join(', ')+'.','Module 1, total derivative (chain rule).',S,'d'+dep+'/d'+tv+' = '+P(tot)+'.'+ex)}
+function sTay(t,L){if(!/taylor|maclaurin|expand.*(about|around|near|series)|series expansion/.test(L))return null;const D=defs(t,1),k=Object.keys(D)[0];if(!k)return null;const f=parse(D[k]),X=[...vs(f)].sort(ord);if(X.length!=2)return null;
+const pt=point(t)||[0,0],n=/third|3rd|cubic/.test(L)?3:2,[a,b]=pt,[x,y]=X,S=[],fa=(c,v)=>c==0?v:'('+v+(c<0?' + '+fr(-c):' - '+fr(c))+')';
+const dd=(i,j)=>{let h=f;for(let q=0;q<i;q++)h=d(h,x);for(let q=0;q<j;q++)h=d(h,y);return EV(h,envOf(X,pt))};
+S.push('Taylor series about ('+a+', '+b+'): f(x,y) = Σ (1/k!)[(x−a)∂/∂x + (y−b)∂/∂y]^k f at ('+a+', '+b+'), up to degree '+n+'.');
+const terms=[],C=(m,r)=>{let c=1;for(let i=0;i<r;i++)c=c*(m-i)/(i+1);return c},F=q=>{let s=1;for(let i=2;i<=q;i++)s*=i;return s};
+for(let q=0;q<=n;q++){const row=[];for(let i=q;i>=0;i--){const j=q-i,v=dd(i,j);row.push('∂^'+q+'f/∂'+x+'^'+i+'∂'+y+'^'+j+' = '+fr(v));const c=v*C(q,i)/F(q);if(Math.abs(c)>1e-12){const parts=(i?fa(a,x)+(i>1?'^'+i:''):'')+(j?fa(b,y)+(j>1?'^'+j:''):'');terms.push([c,parts])}}S.push('Order '+q+' values at the point: '+row.join('; ')+'.')}
+const ser=terms.map(([c,p],i)=>(i?(c<0?' - ':' + '):(c<0?'-':''))+(Math.abs(Math.abs(c)-1)<1e-12&&p?'':fr(Math.abs(c)))+p).join('');
+return steps('expand '+k+' = '+D[k]+' about ('+a+', '+b+') up to degree '+n+'.','Module 1, Taylor/Maclaurin series of two variables.',S,k+' ≈ '+(ser||'0')+' + higher order terms.')}
+function sMax(t,L){if(!/maxima|minima|maximum|minimum|extremum|extrema|saddle|stationary/.test(L))return null;const D=defs(t,1),k=Object.keys(D)[0];if(!k)return null;const f=parse(D[k]);let X=[...vs(f)].sort(ord);
+const mv=X.includes('x')&&X.includes('y')?['x','y']:X.slice(0,2);if(mv.length!=2)return null;const [x,y]=mv,ex=X.filter(v=>!mv.includes(v)),A={};
+ex.forEach(v=>{const m=nz(t).match(new RegExp('\\b'+v+'\\s*=\\s*(-?[\\d.]+)'));A[v]=m?+m[1]:1});
+const fx=d(f,x),fy=d(f,y),r=d(fx,x),s=d(fx,y),tt=d(fy,y),S=['∂f/∂'+x+' = '+P(fx)+' and ∂f/∂'+y+' = '+P(fy)+'. Put both equal to zero.'];
+const out=[];for(let i=-5;i<=5;i++)for(let j=-5;j<=5;j++){let u=i+.13,w=j-.07;for(let q=0;q<60;q++){const e={...BASE,...A,[x]:u,[y]:w},a=EV(fx,e),b=EV(fy,e),R=EV(r,e),Ss=EV(s,e),T=EV(tt,e),Dd=R*T-Ss*Ss;if(!isFinite(Dd)||Math.abs(Dd)<1e-12)break;const du=(a*T-b*Ss)/Dd,dw=(b*R-a*Ss)/Dd;u-=du;w-=dw;if(Math.abs(du)+Math.abs(dw)<1e-13)break}
+const e={...BASE,...A,[x]:u,[y]:w};if(isFinite(u)&&Math.abs(u)<1e4&&Math.abs(EV(fx,e))<1e-7&&Math.abs(EV(fy,e))<1e-7&&!out.some(p=>Math.hypot(p[0]-u,p[1]-w)<1e-5))out.push([u,w])}
+if(ex.length)S.push('The constant'+(ex.length>1?'s ':' ')+ex.join(', ')+' '+(ex.length>1?'are':'is')+' taken as '+ex.map(v=>A[v]).join(', ')+' for the numerical work (give a value if yours differs).');
+if(!out.length)return steps('find the maxima and minima of '+k+' = '+D[k]+'.','Module 1, maxima and minima of two variables.',S,'no real stationary point was found, so f has no maximum or minimum.');
+S.push('Solving these gives the stationary point'+(out.length>1?'s ':' ')+out.map(p=>'('+fr(p[0])+', '+fr(p[1])+')').join(', ')+'.');
+S.push('Second derivatives: r = ∂²f/∂'+x+'² = '+P(r)+', s = ∂²f/∂'+x+'∂'+y+' = '+P(s)+', t = ∂²f/∂'+y+'² = '+P(tt)+'.');
+const res=out.map(p=>{const e={...BASE,...A,[x]:p[0],[y]:p[1]},R=EV(r,e),Ss=EV(s,e),T=EV(tt,e),q=R*T-Ss*Ss,fv=EV(f,e);let v;
+if(q>1e-9)v=R<0?'maximum, value '+fr(fv):'minimum, value '+fr(fv);else if(q<-1e-9)v='saddle point (no extremum)';else v='rt − s² = 0, the test fails and needs further study';
+S.push('At ('+fr(p[0])+', '+fr(p[1])+'): r = '+fr(R)+', s = '+fr(Ss)+', t = '+fr(T)+', so rt − s² = '+fr(q)+'. This is a '+v+'.');return '('+fr(p[0])+', '+fr(p[1])+') is '+v}).join('; ');
+return steps('find the maxima and minima of '+k+' = '+D[k]+'.','Module 1, maxima and minima of two variables (rt − s² test).',S,res+'.')}
+function sGrad(t,L){if(!/gradient|\bgrad\b|∇|directional|normal to|maximum rate|greatest rate/.test(L))return null;const D=defs(t,1),k=Object.keys(D)[0];if(!k)return null;const f=parse(D[k]),X=['x','y','z'].filter(a=>vs(f).has(a));if(!X.length)return null;
+const G=X.map(x=>d(f,x)),p=point(t),S=['∇'+k+' = '+X.map((x,i)=>'(∂'+k+'/∂'+x+')'+'ijk'[i]).join(' + ')+' = '+vec(G)+' (components along i, j, k).'];let fa='∇'+k+' = '+vec(G);let gp=null;
+if(p){const e=envOf(X,p);gp=G.map(g=>EV(g,e));S.push('At the point '+nv(p)+': ∇'+k+' = '+nv(gp)+'.');fa+='; at '+nv(p)+' it is '+nv(gp)}
+const dm=nz(t).match(/(?:direction|along|towards?)\s*(?:of|the vector)?\s*(.*)$/i);
+if(gp&&dm){const u=dirv(dm[1]);if(u){const nu=Math.hypot(...u),uh=u.map(v=>v/nu),dp=gp.reduce((s,v,i)=>s+v*(uh[i]||0),0);S.push('Direction '+nv(u)+' has length '+fr(+nu.toFixed(6))+', so the unit vector is '+uh.map(v=>fr(+v.toFixed(5))).join(', ')+'.');S.push('Directional derivative = ∇'+k+' · û = '+fr(+dp.toFixed(6))+'.');fa+='. Directional derivative = '+fr(+dp.toFixed(6))}}
+if(gp&&/maximum rate|greatest rate|maximum value of the directional/.test(L)){const m=Math.hypot(...gp);S.push('The maximum rate of change is |∇'+k+'| = '+fr(+m.toFixed(6))+', in the direction of ∇'+k+'.');fa+='. Maximum rate = '+fr(+m.toFixed(6))}
+if(gp&&/normal/.test(L)){const m=Math.hypot(...gp);S.push('The normal to the surface is ∇'+k+'. Unit normal = '+gp.map(v=>fr(+(v/m).toFixed(5))).join(', ')+'.')}
+return steps('find the gradient'+(dm?' and directional derivative':'')+' of '+k+' = '+D[k]+'.','Module 2, gradient and directional derivative.',S,fa+'.')}
+function sDiv(t,L){if(!/divergence|curl|\bdiv\b|solenoidal|irrotational|scalar potential/.test(L))return null;const F=vecF(t);if(!F)return null;const X=['x','y','z'];
+const dv=add(add(d(F[0],'x'),d(F[1],'y')),d(F[2],'z')),cu=[add(d(F[2],'y'),neg(d(F[1],'z'))),add(d(F[0],'z'),neg(d(F[2],'x'))),add(d(F[1],'x'),neg(d(F[0],'y')))];
+const S=['The field is F = '+vec(F)+' (components along i, j, k).','div F = ∂F₁/∂x + ∂F₂/∂y + ∂F₃/∂z = '+P(dv)+'.','curl F = (∂F₃/∂y − ∂F₂/∂z, ∂F₁/∂z − ∂F₃/∂x, ∂F₂/∂x − ∂F₁/∂y) = '+vec(cu)+'.'];
+const sol=zero(dv,X),irr=cu.every(c=>zero(c,X));S.push('div F is '+(sol?'identically zero, so F is solenoidal.':'not identically zero, so F is not solenoidal.'));
+S.push('curl F is '+(irr?'identically zero, so F is irrotational and F = ∇φ for some scalar potential φ (find it by integrating F₁ with respect to x, F₂ with respect to y, F₃ with respect to z and merging the terms).':'not identically zero, so F is not irrotational.'));
+const p=point(t);let ex='';if(p){const e=envOf(X,p);ex=' At '+nv(p)+': div F = '+fr(+EV(dv,e).toFixed(6))+', curl F = '+nv(cu.map(c=>+EV(c,e).toFixed(6)))+'.'}
+return steps('find div F and curl F for F = '+vec(F)+'.','Module 2, divergence and curl.',S,'div F = '+P(dv)+'; curl F = '+vec(cu)+'; '+(sol?'solenoidal':'not solenoidal')+', '+(irr?'irrotational':'not irrotational')+'.'+ex)}
+function nb(R,n){const piv=R.map(r=>r.slice(0,n).findIndex(v=>Math.abs(v)>1e-9)),P_=piv.filter(c=>c>=0),o=[];for(let f=0;f<n;f++)if(!P_.includes(f)){const v=Array(n).fill(0);v[f]=1;piv.forEach((c,i)=>{if(c>=0)v[c]=-R[i][f]});o.push(v)}return o}
+const iv=v=>{for(let q=1;q<=30;q++)if(v.every(x=>Math.abs(x*q-Math.round(x*q))<1e-7)){const w=v.map(x=>Math.round(x*q)||0),f=w.find(x=>x);return(f<0?w.map(x=>-x||0):w)}return v.map(g4)};
+function sLT(t,L){const m=nz(t).match(/\bT\s*\(\s*([a-z](?:\s*,\s*[a-z])*)\s*\)\s*=\s*\((.+)\)/);if(!m)return null;const X=m[1].split(',').map(s=>s.trim()),c=spl(m[2]);let C;try{C=c.map(parse)}catch(e){return null}
+const n=X.length,mm=C.length;
+const A=C.map(f=>X.map(x=>d(f,x)));const M=C.map((f,i)=>X.map((x,j)=>isN(A[i][j])?A[i][j][1]:NaN));
+if(M.flat().some(isNaN)||C.some(f=>Math.abs(EV(f,envOf(X,X.map(()=>0))))>1e-9))return steps('check T('+X+') = ('+c.join(', ')+').','Module 5, definition of a linear transformation.',['A linear map must satisfy T(0) = 0 and T(u+v) = T(u) + T(v), T(ku) = kT(u). Here a component contains a constant or a non-linear term in the variables.'],'T is not linear.');
+const R=elim(M,true),ker=nb(R.M,n),rk=R.rank,E=elim(M.map((r,i)=>r),false),colp=R.M.map(r=>r.findIndex(v=>Math.abs(v)>1e-9)).filter(c=>c>=0);
+const S=['Each component is a linear expression, and T(0) = 0, so T is a linear transformation R^'+n+' → R^'+mm+'.','Matrix of T in the standard basis (rows = coefficients): '+M.map(r=>'['+r.map(fr).join(', ')+']').join(', ')+'.','Row reduce the matrix:'].concat(R.S.length?[R.S.join(' ')]:['already reduced.']);
+S.push('Rank (dimension of the range) = number of pivots = '+rk+'. A basis of the range space is given by the columns '+colp.map(c=>c+1).join(', ')+' of the matrix: '+colp.map(c=>nv(M.map(r=>r[c]))).join(', ')+'.');
+S.push('Kernel (null space): solve MX = 0. '+(ker.length?'A basis is '+ker.map(v=>nv(iv(v))).join(', ')+'.':'Only X = 0, so the kernel is {0}.'));
+S.push('Nullity = '+ker.length+'. Check: rank + nullity = '+rk+' + '+ker.length+' = '+n+' = dim of the domain, so the Rank–Nullity theorem holds.');
+return steps('analyse the linear transformation T('+X+') = ('+c.join(', ')+').','Module 5, matrix, kernel, range and rank–nullity.',S,'matrix '+M.map(r=>'['+r.join(', ')+']').join(', ')+'; rank '+rk+', nullity '+ker.length+'; '+(ker.length?'singular (not one-one)':'non-singular (one-one)')+'.')}
+function sSys(t,L){if(!/solve|system|simultaneous|consisten|gauss|equations?|seidel|traffic|homogeneous|solution/.test(L))return null;
+const E=nz(t).split(/[;,\n]|\band\b/i).map(s=>s.replace(/(=.*?)\s*\b[a-z]{2,}\b.*$/i,'$1').replace(/\b[a-z]{2,}\b/gi,' ').replace(/[:.]\s*$/,'').trim()).filter(s=>/^[^=]+=[^=]+$/.test(s)&&/[a-z]/i.test(s));if(E.length<2)return null;
+let ex;try{ex=E.map(s=>{const[a,b]=s.split('=');return add(parse(a),neg(parse(b)))})}catch(e){return null}
+const X=[...new Set(ex.flatMap(e=>[...vs(e)]))].sort(ord);if(!X.length||X.length>6)return null;const Z=X.map(()=>0),M=[];
+for(const e of ex){const row=X.map(x=>d(e,x));if(row.some(r=>!isN(r)))return null;M.push([...row.map(r=>r[1]),-EV(e,envOf(X,Z))])}
+M.forEach(r=>r.forEach((v,i)=>{if(Object.is(v,-0))r[i]=0}));
+const sys=E.map((e,i)=>e.replace(/\s+/g,' ')).join(', ');
+if(/seidel|iterat/.test(L)){const n=M.length;if(X.length!=n)return null;const dom=A=>A.every((r,i)=>Math.abs(r[i])>r.slice(0,n).reduce((s,v,j)=>j==i?s:s+Math.abs(v),0)),perm=a=>a.length<2?[a]:a.flatMap((x,i)=>perm([...a.slice(0,i),...a.slice(i+1)]).map(p=>[x,...p]));
+let A=M,S=[];if(!dom(A)){const f=perm(M).find(dom);if(f){A=f;S.push('The system is rearranged so that it is diagonally dominant: '+A.map(r=>r.slice(0,n).map((v,j)=>fr(v)+X[j]).join(' + ').replace(/\+ -/g,'- ')+' = '+fr(r[n])).join('; ')+'.')}else S.push('The system cannot be made diagonally dominant by reordering, so convergence is not guaranteed; the iteration is still shown.')}
+S.push('Solve each equation for its own variable: '+A.map((r,i)=>X[i]+' = ('+fr(r[n])+X.map((x,j)=>j==i?'':(r[j]<=0?' + ':' - ')+(Math.abs(r[j])==1?'':fr(Math.abs(r[j])))+x).join('')+')/'+fr(r[i])).join('; ')+'. Always use the newest values. Start with all variables 0.');
+const want=+(nz(t).match(/(\d+)\s*(?:st|nd|rd|th)?\s*iterations?/i)||[])[1]||0;let x=Array(n).fill(0);
+for(let k=1;k<=(want||30);k++){const o=x.slice();for(let i=0;i<n;i++)x[i]=(A[i][n]-A[i].slice(0,n).reduce((s,v,j)=>j==i?s:s+v*x[j],0))/A[i][i];S.push('Iteration '+k+': '+X.map((v,i)=>v+' = '+g4(x[i])).join(', ')+'.');if(!want&&x.every((v,i)=>Math.abs(v-o[i])<5e-5))break}
+return steps('solve '+sys+' by the Gauss–Seidel method.','Module 3, Gauss–Seidel iteration (labs 5).',S,X.map((v,i)=>v+' ≈ '+g4(x[i])).join(', ')+'.')}
+const A=M.map(r=>r.slice(0,-1)),Rr=elim(M,true),rA=elim(A,false).rank,rK=Rr.rank,n=X.length,S=['Write the augmented matrix [A|B] with unknowns ('+X+'): '+M.map(r=>'['+r.map(fr).join(', ')+']').join(', ')+'.','Reduce to row echelon form (Gauss–Jordan):'].concat(Rr.S);
+S.push('Rank of A = '+rA+', rank of [A|B] = '+rK+', number of unknowns = '+n+'.');let fa;
+if(rA<rK)fa='the ranks differ, so the system is inconsistent and has no solution.';
+else if(rA==n)fa='unique solution: '+X.map((v,i)=>v+' = '+fr(Rr.M[i][n])).join(', ')+'.';
+else{const piv=Rr.M.map(r=>r.slice(0,n).findIndex(v=>Math.abs(v)>1e-9)),fr_=X.map((_,j)=>j).filter(j=>!piv.includes(j)),kn=fr_.map((_,i)=>'k'+(i+1));
+fa='consistent with infinitely many solutions ('+(n-rA)+' free variable'+(n-rA>1?'s':'')+'): '+fr_.map((j,i)=>X[j]+' = '+kn[i]).join(', ')+'; '+piv.map((c,i)=>c<0?null:X[c]+' = '+fr(Rr.M[i][n])+fr_.map((j,q)=>Math.abs(Rr.M[i][j])<1e-9?'':(Rr.M[i][j]>0?' - ':' + ')+(Math.abs(Math.abs(Rr.M[i][j])-1)<1e-9?'':fr(Math.abs(Rr.M[i][j])))+kn[q]).join('')).filter(Boolean).join('; ')+'.'}
+return steps('solve the system '+sys+'.','Module 3, Gauss–Jordan elimination and rank (consistency test).',S,fa)}
+function sInv(t,L){if(!/inverse/.test(L))return null;const M=parseM(t);if(!M||M.length!=M[0].length)return null;const n=M.length,R=elim(M.map((r,i)=>[...r,...Array.from({length:n},(_,j)=>+(i==j))]),true),A=R.M.map(r=>r.slice(0,n));
+const ok=A.every((r,i)=>r.every((v,j)=>Math.abs(v-(i==j))<1e-9)),S=['Write the augmented matrix [A | I] and apply row operations until the left half becomes I.'].concat(R.S);
+if(!ok){S.push('The left half cannot be reduced to I (rank < '+n+').');return steps('find the inverse of the matrix '+M.map(r=>'['+r.join(', ')+']').join(', ')+'.','Module 3, Gauss–Jordan method.',S,'the matrix is singular (|A| = 0), so the inverse does not exist.')}
+const I=R.M.map(r=>r.slice(n));S.push('The right half is now A⁻¹.');return steps('find the inverse of the matrix '+M.map(r=>'['+r.join(', ')+']').join(', ')+'.','Module 3, Gauss–Jordan method.',S,'A⁻¹ = '+I.map(r=>'['+r.map(fr).join(', ')+']').join(', ')+'.')}
+function cubic(c2,c1,c0){const p=c1-c2*c2/3,q=2*c2**3/27-c2*c1/3+c0,s=c2/3;if(Math.abs(p)<1e-12&&Math.abs(q)<1e-12)return[-s,-s,-s];let r;
+if(-(4*p**3+27*q*q)>=-1e-9){const m=2*Math.sqrt(Math.max(-p/3,0)),a=Math.acos(Math.max(-1,Math.min(1,3*q/(2*p)*Math.sqrt(-3/p))))/3;r=[0,1,2].map(k=>m*Math.cos(a-2*Math.PI*k/3)-s)}
+else{const w=Math.sqrt(q*q/4+p**3/27);r=[Math.cbrt(-q/2+w)+Math.cbrt(-q/2-w)-s]}
+return r.map(x=>{for(let i=0;i<30;i++){const f=((x+c2)*x+c1)*x+c0,fd=(3*x+2*c2)*x+c1;if(Math.abs(fd)<1e-12)break;x-=f/fd}return x})}
+function sEig3(t,L){if(!/eigen|diagonali|characteristic/.test(L))return null;const M=parseM(t);if(!M||M.length!=3||M[0].length!=3)return null;
+const tr=M[0][0]+M[1][1]+M[2][2],c1=M[0][0]*M[1][1]-M[0][1]*M[1][0]+M[0][0]*M[2][2]-M[0][2]*M[2][0]+M[1][1]*M[2][2]-M[1][2]*M[2][1],dt=ev(det(M.map(r=>r.map(N))),{}),
+S=['The characteristic equation is |A − λI| = 0, i.e. λ³ − (trace)λ² + (sum of principal 2×2 minors)λ − |A| = 0.','Trace = '+fr(tr)+', sum of principal minors = '+fr(c1)+', |A| = '+fr(dt)+'. So λ³ − '+fr(tr)+'λ² + '+fr(c1)+'λ − '+fr(dt)+' = 0.'];
+const rt=cubic(-tr,c1,-dt).sort((a,b)=>a-b);if(rt.length<3){S.push('This cubic has only one real root, λ ≈ '+fr(rt[0])+', and a pair of complex roots.');return steps('find the eigenvalues of the 3×3 matrix.','Module 3, characteristic equation.',S,'one real eigenvalue λ ≈ '+fr(rt[0])+' and two complex eigenvalues.')}
+const uq=[];rt.forEach(r=>{if(!uq.some(u=>Math.abs(u[0]-r)<1e-6))uq.push([r,0]);uq.find(u=>Math.abs(u[0]-r)<1e-6)[1]++});
+S.push('Solving the cubic gives the eigenvalues '+rt.map(fr).join(', ')+' (their sum equals the trace and their product equals |A|).');let tot=0;const vecs=[];
+uq.forEach(([l,m],i)=>{const B=M.map((r,a)=>r.map((v,b)=>v-(a==b?l:0))),R=elim(B,true),k=nb(R.M,3);tot+=k.length;vecs.push(...k);S.push('For λ = '+fr(l)+' (repeated '+m+' time'+(m>1?'s':'')+'): solve (A − λI)X = 0. Row reduction gives '+(k.length?k.length+' independent eigenvector'+(k.length>1?'s':'')+': '+k.map(v=>nv(iv(v))).join(' and ')+'.':'no non-zero solution.')+' Any non-zero multiple is also an eigenvector.')});
+S.push(tot==3?'There are 3 linearly independent eigenvectors, so A is diagonalizable: D = P⁻¹AP with the modal matrix P having these eigenvectors as columns, and D = diag('+uq.flatMap(([l,m])=>Array(Math.min(m,vecs.length)).fill(fr(l))).join(', ')+') in the matching order.':'Only '+tot+' independent eigenvectors exist, so A is not diagonalizable.');
+return steps('find the eigenvalues and eigenvectors of the 3×3 matrix '+M.map(r=>'['+r.join(', ')+']').join(', ')+'.','Module 3, eigenvalues and eigenvectors.',S,'eigenvalues '+rt.map(fr).join(', ')+'; eigenvectors '+vecs.map(v=>nv(iv(v))).join(', ')+'.')}
+function sVS(t,L){if(/inner|dot product|angle/.test(L)&&!/independen|dependen|basis|span/.test(L))return null;const M0=parseM(t);
+if(M0&&/row space|column space/.test(L)){const R=elim(M0,true),rs=R.M.filter(r=>r.some(v=>Math.abs(v)>1e-9)),cp=R.M.map(r=>r.findIndex(v=>Math.abs(v)>1e-9)).filter(c=>c>=0);
+return steps('find bases of the row space and column space of the matrix '+M0.map(r=>'['+r.join(', ')+']').join(', ')+'.','Module 4, row space and column space.',['Row reduce: '+(R.S.join(' ')||'already reduced.'),'Non-zero rows of the reduced matrix: '+rs.map(r=>nv(r)).join(', ')+'.','Pivot columns are '+cp.map(c=>c+1).join(', ')+'; take those columns of the ORIGINAL matrix.'],'row space basis '+rs.map(nv).join(', ')+' (dimension '+R.rank+'); column space basis '+cp.map(c=>nv(M0.map(r=>r[c]))).join(', ')+' (dimension '+R.rank+').')}
+if(!/independen|dependen|basis|span|dimension|combination|express/.test(L))return null;
+const Vs=[...nz(t).matchAll(/\(\s*(-?[\d.]+(?:\s*,\s*-?[\d.]+)+)\s*\)/g)].map(m=>m[1].split(',').map(Number));if(!Vs.length||Vs.some(v=>v.length!=Vs[0].length))return null;const m=Vs[0].length;
+if(/express|combination|in the span|belongs?|lies?|spanned by|span of/.test(L)&&Vs.length>=2&&/express|in the span|belongs?|lies?|combination of|is it a/.test(L)){const tg=Vs[0],B=Vs.slice(1),Mx=Array.from({length:m},(_,i)=>[...B.map(b=>b[i]),tg[i]]),R=elim(Mx,true),rA=elim(Mx.map(r=>r.slice(0,-1)),false).rank,S=['Write '+nv(tg)+' = '+B.map((_,i)=>'c'+(i+1)+nv(B[i])).join(' + ')+' and compare components to get a linear system in c1..c'+B.length+'.','Reduce the augmented matrix: '+(R.S.join(' ')||'already reduced.'),'Rank of coefficient matrix = '+rA+', rank of augmented matrix = '+R.rank+'.'];
+if(rA<R.rank)return steps('decide if '+nv(tg)+' is a linear combination of '+B.map(nv).join(', ')+'.','Module 4, linear combination and span.',S,'the system is inconsistent, so the vector is NOT in the span.');
+return steps('express '+nv(tg)+' in terms of '+B.map(nv).join(', ')+'.','Module 4, linear combination and span.',S,'yes. '+(rA==B.length?B.map((_,i)=>'c'+(i+1)+' = '+fr(R.M[i][B.length])).join(', ')+', so '+nv(tg)+' = '+B.map((_,i)=>fr(R.M[i][B.length])+nv(B[i])).join(' + ')+'.':'there are infinitely many choices of the scalars.'))}
+const R=elim(Vs,false),rk=R.rank,k=Vs.length,S=['Put the vectors as rows of a matrix and reduce it to echelon form.',R.S.length?R.S.join(' '):'It is already in echelon form.','The echelon form is: '+R.M.map(nv).join(', ')+'. Number of non-zero rows (rank) = '+rk+'.'];
+const kk=nb(elim(Array.from({length:m},(_,i)=>Vs.map(v=>v[i])),true).M,k);let fa;
+if(/dimension|basis/.test(L)&&!/independen|dependen/.test(L)){const bs=R.M.filter(r=>r.some(v=>Math.abs(v)>1e-9));S.push('The non-zero rows of the echelon form are independent and span the same space.');fa='dimension = '+rk+'; a basis of the span is '+bs.map(nv).join(', ')+(rk==m?', so these vectors span all of R^'+m+'.':'.')}
+else if(rk==k){fa='the vectors are linearly independent (rank = number of vectors = '+k+').'+(k==m?' They form a basis of R^'+m+'.':'')}
+else{fa='the vectors are linearly dependent (rank '+rk+' < '+k+' vectors).';if(kk.length)S.push('A dependence relation c1v1 + … + c'+k+'v'+k+' = 0 has coefficients '+nv(iv(kk[0]))+'.')}
+return steps('test the vectors '+Vs.map(nv).join(', ')+'.','Module 4, linear independence, basis and dimension.',S,fa)}
+function elim(A,full){const M=A.map(r=>r.slice()),n=M.length,c=M[0].length,S=[];let r=0;
+for(let j=0;j<c&&r<n;j++){let p=-1;for(let i=r;i<n;i++)if(Math.abs(M[i][j])>1e-9){p=i;break}if(p<0)continue;
+if(p!=r){[M[r],M[p]]=[M[p],M[r]];S.push('Swap R'+(r+1)+' and R'+(p+1)+'.')}
+if(full&&Math.abs(M[r][j]-1)>1e-9){const q=M[r][j];M[r]=M[r].map(v=>v/q);S.push('R'+(r+1)+' → R'+(r+1)+' / '+fr(q)+'.')}
+for(let i=full?0:r+1;i<n;i++){if(i==r)continue;const k=M[i][j];if(Math.abs(k)<1e-9)continue;const q=k/M[r][j];M[i]=M[i].map((v,x)=>v-q*M[r][x]);S.push('R'+(i+1)+' → R'+(i+1)+(q<0?' + '+fr(-q):' − '+fr(q))+'·R'+(r+1)+'.')}r++}
+return{M:M.map(x=>x.map(v=>Math.abs(v)<1e-9?0:v)),S,rank:r}}
+window.parseM=function(t){let m=t.match(/\[\s*\[[^\]]*\](?:\s*,\s*\[[^\]]*\])*\s*\]/);if(m)try{const M=JSON.parse(m[0]);if(Array.isArray(M)&&M.every(r=>Array.isArray(r)&&r.length==M[0].length&&r.every(Number.isFinite)))return M}catch(e){}
+m=nz(t).match(/\[([^\[\]]*;[^\[\]]*)\]|\(([^()]*;[^()]*)\)/);if(m){const M=(m[1]||m[2]).split(';').map(r=>r.trim().split(/[\s,]+/).map(Number));if(M.every(r=>r.length==M[0].length&&r.every(Number.isFinite)))return M}return null};
+const parseM=window.parseM;
+/* ---------- syllabus gate ---------- */
+const TOP=[[1,'Partial differentiation',/partial|∂|euler|homogeneous function/],[1,'Jacobian',/jacobian/],[1,'Total derivative and composite functions',/total derivative|composite|d[uzwf]\/dt/],[1,'Taylor and Maclaurin series of two variables',/taylor|maclaurin|expand.*(about|around|near|series)|series expansion/],[1,'Maxima and minima of two variables',/maxima|minima|maximum|minimum|extrem|saddle|stationary/],
+[2,'Gradient and directional derivative',/gradient|\bgrad\b|∇|directional|normal to/],[2,'Divergence and curl',/divergence|curl|\bdiv\b|solenoidal|irrotational|scalar potential/],[2,'Polar and curvilinear coordinates',/polar|cylindrical|spherical|curvilinear|scale factor|base vector|orthogonal system/],
+[3,'Rank, echelon form and linear systems',/\brank\b|echelon|consisten|gauss|simultaneous|linear (system|equation)|traffic|homogeneous/],[3,'Eigenvalues and eigenvectors',/eigen|diagonali|modal matrix|cayley|inverse of/],[3,'Gauss–Seidel method',/seidel/],
+[4,'Vector spaces',/vector space|subspace|\bspan|linearly|independen|dependen|\bbasis|\bbases|dimension|row space|column space|inner product|orthogonal|orthonormal|coordinate vector|linear combination|gram/],[5,'Linear transformations',/linear transformation|\bkernel|nullity|null space|range space|rank.?nullity|\bt\s*\(|singular|invertible transformation/]];
+const OUT=/laplace|fourier|differential equation|\bdy\/dx|\bode\b|integral|integrat|∫|probabilit|statistic|beta function|gamma function|green'?s|stokes|divergence theorem|\blimits?\b|\blim\b|converge|bessel|legendre|z-transform|simpson|trapez|runge|newton.?raphson|regula|interpolat|binomial|\bmean\b|variance|complex number|matrix multiplication of|python|java\b|c\+\+|history|capital of|who is|chemistry|physics/;
+const SYL='Partial differentiation, Jacobian, Taylor series and maxima–minima (Module 1); gradient, divergence, curl and curvilinear coordinates (Module 2); linear systems, Gauss and Gauss–Jordan, Gauss–Seidel, eigenvalues and eigenvectors (Module 3); vector spaces, basis, dimension and inner product (Module 4); linear transformations and the Rank–Nullity theorem (Module 5).';
+const PROB=/\b(find|solve|evaluate|determine|calculate|compute|show that|prove|verify|obtain|expand|reduce|test|check|examine|given|let|if)\b|=|\[\[/;
+const oos=(w)=>({k:'out',t:'This question is out of the VTU syllabus for 1BMATS101 (Calculus and Linear Algebra)'+(w?', because "'+w.trim()+'" is not a topic in any of the five modules':', because it does not match any topic of the five modules')+'.\nThe syllabus covers only: '+SYL+'\nIf you think it belongs to the syllabus, rewrite it with the function or matrix written out, for example: find the Jacobian of u = x+y, v = xy.'});
+window.solveQ=function(q){const t=q.trim(),L=nz(t).toLowerCase(),o=L.match(OUT);const top=TOP.find(x=>x[2].test(L));
+if(o&&!/seidel|gauss.?jordan|gauss elim/.test(L))return oos(o[0]);
+let r=null;for(const f of[sJac,sTay,sMax,sTot,sGrad,sDiv,sLT,sInv,sEig3,sVS,sSys,sPartial])try{if(r=f(t,L))break}catch(e){r=null}
+if(!r)try{r=offlineSolve(t)}catch(e){r=null}
+if(r)return{k:'sol',t:r};
+if(PROB.test(L)){if(top)return{k:'rec',t:'Problem: '+t+'\nModule and method: this question is inside the syllabus. It belongs to Module '+top[0]+', '+top[1]+'.\nI could not read the functions or numbers well enough to compute it automatically, so I will not guess a final answer.\nPlease write it in one of these forms and ask again:\nStep 1: functions as u = x^2*y + y^2, vectors as (1, 2, 3), matrices as [[1,2],[3,4]] or [1 2; 3 4], equations as x + y + z = 6, linear maps as T(x,y) = (2x+y, x-3y).\nStep 2: add the point, for example "at (1, 2, 1)", if the question asks for a value.\nHere is the method for this topic:\n'+(()=>{const d=document.createElement('div');d.innerHTML=answer(t);return d.textContent})()}
+return oos('')}
+const a=answer(t);if(!a.startsWith('I could not match'))return{k:'th',t:a};
+return top?{k:'rec',t:'This is inside the syllabus (Module '+top[0]+': '+top[1]+'), but I have no stored note for that exact wording. Try a keyword such as: '+top[1]+', or check the textbook chapter listed in Modules.'}:oos('')};
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\n/g,'<br>');
+window.ask=function(){const q=$('#q').value.trim();if(!q)return;const say_=window.add;say_(q,'u');$('#q').value='';setTimeout(()=>{let r;try{r=solveQ(q)}catch(e){r={k:'x',t:'Sorry, I could not process that question. Please rewrite it with the functions or numbers written out.'}}say_(r.k=='th'?r.t:esc(r.t),'a',1)},350)};
+window.solveA=function(text){const r=solveQ(text);let s=r.t;if(r.k=='th'){const d=document.createElement('div');d.innerHTML=s;s=d.textContent}aSay(s,idle)};
+/* upload: photo (OCR) or .txt */
+function up(inp,go,box){const f=inp.files[0];inp.value='';if(!f)return;if(/\.txt$/i.test(f.name)||f.type=='text/plain'){f.text().then(s=>{box.value=s.slice(0,800);go()});return}
+box.value='Reading the image… (needs internet the first time)';
+(window.Tesseract?Promise.resolve():new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';s.onload=ok;s.onerror=no;document.head.append(s)})).then(()=>Tesseract.recognize(f,'eng')).then(r=>{box.value=r.data.text.replace(/\s*\n\s*/g,' ').trim();go()}).catch(()=>{box.value='';alert('Could not read the image. Please type the question.')})}
+function mk(box,go){if(!box)return;const i=document.createElement('input');i.type='file';i.accept='image/*,.txt';i.hidden=true;const b=document.createElement('button');b.className='sq';b.title='Upload the question (photo or .txt file)';b.textContent='📎';b.onclick=()=>i.click();i.onchange=()=>up(i,go,box);box.after(i,b)}
+mk($('#q'),()=>ask());mk($('#at'),()=>sendA());
+const sub=document.querySelector('#ask .sub');if(sub)sub.innerHTML='Type or upload (📎 photo or .txt) a question. If it is inside the VTU syllabus you get the full step-by-step solution; if not, it tells you it is out of syllabus. Try: "Find the Jacobian of u = x+y, v = xy" or "Find the maxima and minima of f = x^3 + y^3 - 3xy".';
+})();
+</script></body></html>
